@@ -1,0 +1,6 @@
+# from .cvsignore
+/build.xml
+/javaCompiler...args
+
+# additions for git
+/bin
