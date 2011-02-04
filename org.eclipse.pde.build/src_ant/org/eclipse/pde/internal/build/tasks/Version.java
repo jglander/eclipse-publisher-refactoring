@@ -1,5 +1,5 @@
 /*
- * $Header: /cvsroot/rt/org.eclipse.equinox/incubator/p2/publishing/org.eclipse.pde.build/src_ant/org/eclipse/pde/internal/build/tasks/Version.java,v 1.1 2010/12/23 03:38:16 prapicau Exp $
+ * $Header: /cvsroot/eclipse/pde/build/org.eclipse.pde.build/src_ant/org/eclipse/pde/internal/build/tasks/Version.java,v 1.2 2008/08/20 15:16:18 aniefer Exp $
  * 
  * Copyright (c) OSGi Alliance (2004, 2006). All Rights Reserved.
  * 
@@ -37,7 +37,7 @@ import java.util.StringTokenizer;
  * <p>
  * <code>Version</code> objects are immutable.
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 1.3
  */
 
