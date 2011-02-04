@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others. All rights reserved. This
+ * Copyright (c) 2007, 2011 IBM Corporation and others. All rights reserved. This
  * program and the accompanying materials are made available under the terms of
  * the Eclipse Public License v1.0 which accompanies this distribution, and is
  * available at http://www.eclipse.org/legal/epl-v10.html
@@ -23,6 +23,7 @@ import org.eclipse.equinox.internal.p2.engine.SimpleProfileRegistry;
 import org.eclipse.equinox.internal.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.p2.metadata.InstallableUnit;
 import org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager;
+import org.eclipse.equinox.internal.p2.repository.Transport;
 import org.eclipse.equinox.internal.provisional.p2.core.eventbus.IProvisioningEventBus;
 import org.eclipse.equinox.internal.provisional.p2.director.IDirector;
 import org.eclipse.equinox.p2.core.*;
@@ -104,6 +105,10 @@ public abstract class AbstractProvisioningTest extends TestCase {
 
 	protected static void assertNotOK(String message, IStatus result) {
 		assertTrue(message, !result.isOK());
+	}
+
+	protected static void assertOK(IStatus status) {
+		assertOK("The status should have been OK.", status);
 	}
 
 	protected static void assertOK(String message, IStatus status) {
@@ -854,6 +859,10 @@ public abstract class AbstractProvisioningTest extends TestCase {
 
 	protected IProfileRegistry getProfileRegistry() {
 		return (IProfileRegistry) getAgent().getService(IProfileRegistry.SERVICE_NAME);
+	}
+
+	protected Transport getTransport() {
+		return (Transport) getAgent().getService(Transport.SERVICE_NAME);
 	}
 
 	protected IMetadataRepository createMetadataRepository(URI location, Map properties) throws ProvisionException {
