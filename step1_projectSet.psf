@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<psf version="2.0">
+<provider id="org.eclipse.team.cvs.core.cvsnature">
+<project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/rt,org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.jarprocessor,org.eclipse.equinox.p2.jarprocessor"/>
+</provider>
+</psf>

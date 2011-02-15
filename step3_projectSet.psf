@@ -21,7 +21,6 @@
 <project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/rt,org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.extensionlocation,org.eclipse.equinox.p2.extensionlocation"/>
 <project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/rt,org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.garbagecollector,org.eclipse.equinox.p2.garbagecollector"/>
 <project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/rt,org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.installer,org.eclipse.equinox.p2.installer"/>
-<project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/rt,org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.jarprocessor,org.eclipse.equinox.p2.jarprocessor"/>
 <project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/rt,org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.metadata,org.eclipse.equinox.p2.metadata"/>
 <project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/rt,org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.metadata.generator,org.eclipse.equinox.p2.metadata.generator"/>
 <project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/rt,org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.metadata.repository,org.eclipse.equinox.p2.metadata.repository"/>
@@ -29,7 +28,6 @@
 <project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/rt,org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.ql,org.eclipse.equinox.p2.ql"/>
 <project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/rt,org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.reconciler.dropins,org.eclipse.equinox.p2.reconciler.dropins"/>
 <project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/rt,org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.repository,org.eclipse.equinox.p2.repository"/>
-<project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/rt,org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.repository.tools,org.eclipse.equinox.p2.repository.tools"/>
 <project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/rt,org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.sar,org.eclipse.equinox.p2.sar"/>
 <project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/rt,org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.tests.discovery,org.eclipse.equinox.p2.tests.discovery"/>
 <project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/rt,org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.tests.optimizers,org.eclipse.equinox.p2.tests.optimizers"/>
