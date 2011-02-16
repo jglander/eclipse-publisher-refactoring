@@ -16,18 +16,15 @@ import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.Map.Entry;
-import org.eclipse.equinox.internal.p2.metadata.*;
+import org.eclipse.equinox.internal.p2.metadata.ArtifactKey;
+import org.eclipse.equinox.internal.p2.metadata.BasicVersion;
 import org.eclipse.equinox.p2.metadata.*;
 import org.eclipse.equinox.p2.metadata.MetadataFactory.InstallableUnitDescription;
 import org.eclipse.equinox.p2.metadata.MetadataFactory.InstallableUnitFragmentDescription;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
-import org.eclipse.equinox.p2.publisher.PublisherInfo;
-import org.eclipse.equinox.p2.publisher.eclipse.*;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactDescriptor;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
 import org.eclipse.equinox.p2.repository.artifact.spi.ArtifactDescriptor;
-import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.osgi.framework.Constants;
 
 /**
@@ -208,27 +205,6 @@ public class PublisherHelper {
 		touchpointData.put("uninstall", "removeSourceBundle(bundle:${artifact})"); //$NON-NLS-1$ //$NON-NLS-2$
 		cu.addTouchpointData(MetadataFactory.createTouchpointData(touchpointData));
 		return MetadataFactory.createInstallableUnit(cu);
-	}
-
-	private static void addExtraProperties(IInstallableUnit iiu, Map<String, String> extraProperties) {
-		if (iiu instanceof InstallableUnit) {
-			InstallableUnit iu = (InstallableUnit) iiu;
-
-			for (Entry<String, String> entry : extraProperties.entrySet()) {
-				iu.setProperty(entry.getKey(), entry.getValue());
-			}
-		}
-	}
-
-	public static IInstallableUnit[] createEclipseIU(BundleDescription bd, boolean isFolderPlugin, IArtifactKey key, Map<String, String> extraProperties) {
-		ArrayList<IInstallableUnit> iusCreated = new ArrayList<IInstallableUnit>(1);
-		IPublisherInfo info = new PublisherInfo();
-		String shape = isFolderPlugin ? IBundleShapeAdvice.DIR : IBundleShapeAdvice.JAR;
-		info.addAdvice(new BundleShapeAdvice(bd.getSymbolicName(), fromOSGiVersion(bd.getVersion()), shape));
-		IInstallableUnit iu = BundlesAction.createBundleIU(bd, key, info);
-		addExtraProperties(iu, extraProperties);
-		iusCreated.add(iu);
-		return (iusCreated.toArray(new IInstallableUnit[iusCreated.size()]));
 	}
 
 	public static ArtifactKey createBinaryArtifactKey(String id, Version version) {
