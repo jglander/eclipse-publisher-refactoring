@@ -19,9 +19,9 @@ import org.eclipse.equinox.internal.frameworkadmin.equinox.EquinoxFwConfigFilePa
 import org.eclipse.equinox.internal.frameworkadmin.equinox.EquinoxManipulatorImpl;
 import org.eclipse.equinox.internal.p2.core.helpers.LogHelper;
 import org.eclipse.equinox.internal.p2.core.helpers.ServiceHelper;
-import org.eclipse.equinox.internal.p2.publisher.Activator;
 import org.eclipse.equinox.internal.provisional.frameworkadmin.*;
 import org.eclipse.equinox.simpleconfigurator.manipulator.SimpleConfiguratorManipulator;
+import org.eclipse.pde.internal.publishing.Activator;
 import org.osgi.framework.Constants;
 
 public class DataLoader {
@@ -36,7 +36,7 @@ public class DataLoader {
 	private static final String ORG_ECLIPSE_EQUINOX_SIMPLECONFIGURATOR_CONFIGURL = "org.eclipse.equinox.simpleconfigurator.configUrl"; //$NON-NLS-1$
 
 	private Manipulator manipulator;
-	private File configurationLocation;
+	private final File configurationLocation;
 
 	/**
 	 * 

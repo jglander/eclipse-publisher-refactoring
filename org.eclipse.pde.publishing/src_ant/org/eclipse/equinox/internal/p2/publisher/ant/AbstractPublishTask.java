@@ -8,8 +8,6 @@
  ******************************************************************************/
 package org.eclipse.equinox.internal.p2.publisher.ant;
 
-import org.eclipse.equinox.p2.query.QueryUtil;
-
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -20,16 +18,17 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository;
 import org.eclipse.equinox.internal.p2.core.helpers.ServiceHelper;
 import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository;
-import org.eclipse.equinox.internal.p2.publisher.Activator;
 import org.eclipse.equinox.internal.p2.publisher.Messages;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.p2.publisher.*;
 import org.eclipse.equinox.p2.query.IQueryResult;
+import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.equinox.p2.repository.artifact.ArtifactKeyQuery;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.pde.internal.publishing.Activator;
 
 public abstract class AbstractPublishTask extends Task {
 	protected static final String ANT_PROPERTY_PREFIX = "${"; //$NON-NLS-1$
@@ -98,7 +97,7 @@ public abstract class AbstractPublishTask extends Task {
 	protected List<RepoEntry> contextRepositories = new ArrayList<RepoEntry>();
 
 	protected IProvisioningAgent getProvisioningAgent() {
-		return (IProvisioningAgent) ServiceHelper.getService(Activator.context, IProvisioningAgent.SERVICE_NAME);
+		return (IProvisioningAgent) ServiceHelper.getService(Activator.getContext(), IProvisioningAgent.SERVICE_NAME);
 	}
 
 	protected IStatus createConfigurationEror(String message) {

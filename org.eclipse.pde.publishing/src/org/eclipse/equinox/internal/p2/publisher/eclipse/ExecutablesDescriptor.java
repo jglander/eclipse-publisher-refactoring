@@ -17,9 +17,9 @@ import java.util.Set;
 import org.eclipse.core.runtime.*;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
 import org.eclipse.equinox.internal.p2.core.helpers.LogHelper;
-import org.eclipse.equinox.internal.p2.publisher.Activator;
 import org.eclipse.equinox.p2.publisher.AbstractPublisherAction;
 import org.eclipse.osgi.service.environment.Constants;
+import org.eclipse.pde.internal.publishing.Activator;
 
 public class ExecutablesDescriptor {
 
@@ -27,7 +27,7 @@ public class ExecutablesDescriptor {
 	private Set<File> files;
 	private String executableName;
 	private boolean temporary = false;
-	private String os;
+	private final String os;
 	private File iniFile;
 
 	public static File findExecutable(String os, File root, String baseName) {

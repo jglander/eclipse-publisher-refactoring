@@ -21,7 +21,6 @@ import org.eclipse.equinox.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.internal.p2.core.helpers.LogHelper;
 import org.eclipse.equinox.internal.p2.core.helpers.ServiceHelper;
 import org.eclipse.equinox.internal.p2.metadata.ArtifactKey;
-import org.eclipse.equinox.internal.p2.publisher.Activator;
 import org.eclipse.equinox.internal.p2.publisher.Messages;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.GeneratorBundleInfo;
 import org.eclipse.equinox.p2.metadata.*;
@@ -42,6 +41,7 @@ import org.eclipse.osgi.service.pluginconversion.PluginConverter;
 import org.eclipse.osgi.service.resolver.*;
 import org.eclipse.osgi.util.ManifestElement;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.pde.internal.publishing.Activator;
 import org.osgi.framework.*;
 import org.osgi.service.packageadmin.PackageAdmin;
 
@@ -588,6 +588,7 @@ public class BundlesAction extends AbstractPublisherAction {
 		this.bundles = bundles;
 	}
 
+	@Override
 	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor) {
 		if (bundles == null && locations == null)
 			throw new IllegalStateException(Messages.exception_noBundlesOrLocations);
@@ -614,6 +615,7 @@ public class BundlesAction extends AbstractPublisherAction {
 		publishArtifact(descriptor, inclusions, null, publisherInfo, createRootPrefixComputer(base));
 	}
 
+	@Override
 	protected void publishArtifact(IArtifactDescriptor descriptor, File jarFile, IPublisherInfo publisherInfo) {
 		// no files to publish so this is done.
 		if (jarFile == null || publisherInfo == null)

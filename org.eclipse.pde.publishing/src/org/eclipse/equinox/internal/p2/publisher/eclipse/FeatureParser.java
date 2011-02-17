@@ -18,9 +18,9 @@ import java.util.jar.JarFile;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.p2.core.helpers.LogHelper;
-import org.eclipse.equinox.internal.p2.publisher.Activator;
 import org.eclipse.equinox.p2.publisher.eclipse.Feature;
 import org.eclipse.equinox.spi.p2.publisher.LocalizationHelper;
+import org.eclipse.pde.internal.publishing.Activator;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -29,7 +29,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class FeatureParser extends DefaultHandler {
 
-	private FeatureManifestParser parser = new FeatureManifestParser();
+	private final FeatureManifestParser parser = new FeatureManifestParser();
 
 	/**
 	 * Parses the specified location and constructs a feature. The given location 

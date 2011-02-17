@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.pde.publishing;singleton:=true
 Bundle-ClassPath: pdepublishing.jar
 Eclipse-BundleShape: dir
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.eclipse.pde.publishing.Activator
+Bundle-Activator: org.eclipse.pde.internal.publishing.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin

@@ -19,10 +19,10 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.eclipse.equinox.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.internal.p2.core.helpers.*;
-import org.eclipse.equinox.internal.p2.publisher.Activator;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
 import org.eclipse.equinox.p2.metadata.VersionedId;
 import org.eclipse.osgi.service.datalocation.Location;
+import org.eclipse.pde.internal.publishing.Activator;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.DefaultHandler;
@@ -121,7 +121,7 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 	private SAXParser parser;
 	private String launcherName = null;
 	//	private boolean useIco = false;
-	private Map<String, Collection<String>> icons = new HashMap<String, Collection<String>>(6);
+	private final Map<String, Collection<String>> icons = new HashMap<String, Collection<String>>(6);
 	private String configPath = null;
 	private final Map<String, String> platformSpecificConfigPaths = new HashMap<String, String>();
 	private String configPlatform = null;
@@ -137,7 +137,7 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 	private String application = null;
 	private String version = null;
 	private Properties launcherArgs = new Properties();
-	private File location;
+	private final File location;
 	private List<BundleInfo> bundleInfos;
 	private Map<String, String> properties;
 	private String licenseURL;
@@ -386,6 +386,7 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 		return licenseURL;
 	}
 
+	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) {
 		switch (state) {
 			case STATE_START :
@@ -527,6 +528,7 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 		bundleInfos.add(info);
 	}
 
+	@Override
 	public void endElement(String uri, String localName, String qName) {
 		switch (state) {
 			case STATE_PLUGINS :
@@ -580,6 +582,7 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 		}
 	}
 
+	@Override
 	public void characters(char[] ch, int start, int length) {
 		switch (state) {
 			case STATE_PROGRAM_ARGS :

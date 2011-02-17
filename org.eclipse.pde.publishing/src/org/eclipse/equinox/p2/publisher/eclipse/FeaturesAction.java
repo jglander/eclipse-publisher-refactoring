@@ -20,7 +20,7 @@ import org.eclipse.equinox.internal.p2.core.helpers.*;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils.IPathComputer;
 import org.eclipse.equinox.internal.p2.metadata.ArtifactKey;
 import org.eclipse.equinox.internal.p2.metadata.InstallableUnit;
-import org.eclipse.equinox.internal.p2.publisher.*;
+import org.eclipse.equinox.internal.p2.publisher.FileSetDescriptor;
 import org.eclipse.equinox.internal.p2.publisher.Messages;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.FeatureParser;
 import org.eclipse.equinox.p2.metadata.*;
@@ -36,6 +36,7 @@ import org.eclipse.equinox.p2.repository.artifact.spi.ArtifactDescriptor;
 import org.eclipse.equinox.p2.repository.spi.RepositoryReference;
 import org.eclipse.equinox.spi.p2.publisher.PublisherHelper;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.pde.internal.publishing.Activator;
 
 /**
  * Publish IUs for all of the features in the given set of locations.  The locations can
@@ -592,6 +593,7 @@ public class FeaturesAction extends AbstractPublisherAction {
 		return false;
 	}
 
+	@Override
 	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor) {
 		if (features == null && locations == null)
 			throw new IllegalStateException(Messages.exception_noFeaturesOrLocations);
