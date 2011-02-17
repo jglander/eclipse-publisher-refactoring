@@ -1,0 +1,8 @@
+# from .cvsignore
+/temp.folder
+/target
+/ant_tasks
+
+# additions for git
+/bin/
+/bin_ant/
