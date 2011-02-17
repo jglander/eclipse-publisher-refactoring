@@ -24,24 +24,24 @@
 
 	<extension point="org.eclipse.ant.core.antTasks">
 		<antTask
-			library="ant_tasks/publisher-ant.jar"
+			library="ant_tasks/pdepublishing-ant.jar"
 			name="p2.publisher"
 			class="org.eclipse.equinox.internal.p2.publisher.ant.PublisherTask">
 		</antTask>
     <antTask
           class="org.eclipse.equinox.internal.p2.publisher.ant.FeaturesAndBundlesPublisherTask"
-          library="ant_tasks/publisher-ant.jar"
+          library="ant_tasks/pdepublishing-ant.jar"
           name="p2.publish.featuresAndBundles">
     </antTask>
     <antTask
           class="org.eclipse.equinox.internal.p2.publisher.ant.ProductPublisherTask"
-          library="ant_tasks/publisher-ant.jar"
+          library="ant_tasks/pdepublishing-ant.jar"
           name="p2.publish.product">
     </antTask>
 	</extension>
 
 	<extension point="org.eclipse.ant.core.extraClasspathEntries">
-		<extraClasspathEntry library="ant_tasks/publisher-ant.jar"/>
+		<extraClasspathEntry library="ant_tasks/pdepublishing-ant.jar"/>
 	</extension>
 
 </plugin>
