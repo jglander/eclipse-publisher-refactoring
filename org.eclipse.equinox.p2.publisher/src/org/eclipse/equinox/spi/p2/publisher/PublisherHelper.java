@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2007, 2010 IBM Corporation and others.
+ *  Copyright (c) 2007, 2011 IBM Corporation and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *     Genuitec, LLC - added license support
  *     Code 9 - Ongoing development
+#      SAP AG - consolidation of publishers for PDE formats
  *******************************************************************************/
 package org.eclipse.equinox.spi.p2.publisher;
 
