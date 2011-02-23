@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<psf version="2.0">
+<provider id="org.eclipse.team.cvs.core.cvsnature">
+<project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/eclipse,pde/ui/org.eclipse.pde.core,org.eclipse.pde.core"/>
+<project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/eclipse,pde/ui/org.eclipse.pde.launching,org.eclipse.pde.launching"/>
+<project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/eclipse,pde/ui/org.eclipse.pde.ui,org.eclipse.pde.ui"/>
+<project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/eclipse,org.eclipse.search,org.eclipse.search"/>
+<project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/eclipse,org.eclipse.team.core,org.eclipse.team.core"/>
+<project reference="1.0,:pserver:ingwwdf1.wdf.sap.corp:/cvsroot/eclipse,org.eclipse.team.ui,org.eclipse.team.ui"/>
+</provider>
+</psf>
