@@ -223,10 +223,8 @@ public class EquinoxExecutableAction extends AbstractPublisherAction {
 			name = "eclipse"; //$NON-NLS-1$
 		iron.setName(name);
 		iron.setOS(advice.getOS());
-		iron.setRoot(descriptor.getLocation().getAbsolutePath());
 		try {
-			iron.brand();
-			descriptor.setExecutableName(name, true);
+			iron.brand(descriptor);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
