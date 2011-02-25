@@ -14,6 +14,7 @@ package org.eclipse.equinox.internal.p2.publisher.eclipse;
 import java.io.*;
 import org.eclipse.equinox.internal.frameworkadmin.utils.Utils;
 import org.eclipse.equinox.internal.p2.swt.tools.IconExe;
+import org.eclipse.equinox.p2.metadata.Version;
 
 /**
  *
@@ -24,6 +25,10 @@ public class BrandingIron {
 	private static final String ICON_NAME = "%ICON_NAME%"; //$NON-NLS-1$
 	private static final String MARKER_KEY = "<key>CFBundleExecutable</key>"; //$NON-NLS-1$
 	private static final String BUNDLE_KEY = "<key>CFBundleName</key>"; //$NON-NLS-1$
+	private static final String BUNDLE_ID_KEY = "<key>CFBundleIdentifier</key>"; //$NON-NLS-1$
+	private static final String BUNDLE_INFO_KEY = "<key>CFBundleGetInfoString</key>"; //$NON-NLS-1$
+	private static final String BUNDLE_VERSION_KEY = "<key>CFBundleVersion</key>"; //$NON-NLS-1$
+	private static final String BUNDLE_SHORT_VERSION_KEY = "<key>CFBundleShortVersionString</key>"; //$NON-NLS-1$
 	private static final String ICON_KEY = "<key>CFBundleIconFile</key>"; //$NON-NLS-1$
 	private static final String STRING_START = "<string>"; //$NON-NLS-1$
 	private static final String STRING_END = "</string>"; //$NON-NLS-1$
@@ -32,8 +37,14 @@ public class BrandingIron {
 
 	private String[] icons = null;
 	private String name;
+	private String description;
 	private String os = "win32"; //$NON-NLS-1$
 	private boolean brandIcons = true;
+	private String id;
+	private Version version;
+
+	public BrandingIron() {
+	}
 
 	public void setName(String value) {
 		name = value;
@@ -493,42 +504,35 @@ public class BrandingIron {
 		if (exePos != -1)
 			buffer.replace(exePos, exePos + MARKER_NAME.length(), name);
 		else {
-			exePos = scan(buffer, 0, MARKER_KEY);
-			if (exePos != -1) {
-				int start = scan(buffer, exePos + MARKER_KEY.length(), STRING_START);
-				int end = scan(buffer, start + STRING_START.length(), STRING_END);
-				if (start > -1 && end > start) {
-					buffer.replace(start + STRING_START.length(), end, name);
-				}
-			}
+			replacePlistValue(buffer, MARKER_KEY, name);
 		}
 
 		int bundlePos = scan(buffer, 0, BUNDLE_NAME);
 		if (bundlePos != -1)
 			buffer.replace(bundlePos, bundlePos + BUNDLE_NAME.length(), name);
 		else {
-			exePos = scan(buffer, 0, BUNDLE_KEY);
-			if (exePos != -1) {
-				int start = scan(buffer, exePos + BUNDLE_KEY.length(), STRING_START);
-				int end = scan(buffer, start + STRING_START.length(), STRING_END);
-				if (start > -1 && end > start) {
-					buffer.replace(start + STRING_START.length(), end, name);
-				}
-			}
+			replacePlistValue(buffer, BUNDLE_KEY, name);
+		}
+
+		replacePlistValue(buffer, BUNDLE_ID_KEY, id);
+		replacePlistValue(buffer, BUNDLE_INFO_KEY, description);
+		if (version != null) {
+			// CFBundleShortVersionString is to be 3 segments only
+			// http://developer.apple.com/library/mac/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html#//apple_ref/doc/uid/20001431-111349
+			StringBuffer sv = new StringBuffer(version.getSegment(0).toString());
+			sv.append('.');
+			sv.append(version.getSegmentCount() > 1 ? version.getSegment(1).toString() : "0"); //$NON-NLS-1$
+			sv.append('.');
+			sv.append(version.getSegmentCount() > 2 ? version.getSegment(2).toString() : "0"); //$NON-NLS-1$
+			replacePlistValue(buffer, BUNDLE_VERSION_KEY, version.toString());
+			replacePlistValue(buffer, BUNDLE_SHORT_VERSION_KEY, sv.toString());
 		}
 
 		int iconPos = scan(buffer, 0, ICON_NAME);
 		if (iconPos != -1)
 			buffer.replace(iconPos, iconPos + ICON_NAME.length(), iconName);
 		else {
-			exePos = scan(buffer, 0, ICON_KEY);
-			if (exePos != -1) {
-				int start = scan(buffer, exePos + ICON_KEY.length(), STRING_START);
-				int end = scan(buffer, start + STRING_START.length(), STRING_END);
-				if (start > -1 && end > start) {
-					buffer.replace(start + STRING_START.length(), end, iconName);
-				}
-			}
+			replacePlistValue(buffer, ICON_KEY, iconName);
 		}
 
 		File target = new File(targetRoot, "Info.plist"); //$NON-NLS-1$;
@@ -549,6 +553,20 @@ public class BrandingIron {
 			//ignore
 		}
 		descriptor.replace(infoPList, target);
+	}
+
+	private void replacePlistValue(StringBuffer buffer, String key, String value) {
+		if (value == null) {
+			return;
+		}
+		int exePos = scan(buffer, 0, key);
+		if (exePos != -1) {
+			int start = scan(buffer, exePos + key.length(), STRING_START);
+			int end = scan(buffer, start + STRING_START.length(), STRING_END);
+			if (start > -1 && end > start) {
+				buffer.replace(start + STRING_START.length(), end, value);
+			}
+		}
 	}
 
 	/**
@@ -646,5 +664,17 @@ public class BrandingIron {
 
 	public void setOS(String value) {
 		os = value;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setVersion(Version version) {
+		this.version = version;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

@@ -59,6 +59,7 @@ public class EquinoxExecutableAction extends AbstractPublisherAction {
 		this.flavor = flavor;
 	}
 
+	@Override
 	public IStatus perform(IPublisherInfo publisherinfo, IPublisherResult result, IProgressMonitor monitor) {
 		setPublisherInfo(publisherinfo);
 		ExecutablesDescriptor brandedExecutables = brandExecutables(executables);
@@ -217,12 +218,16 @@ public class EquinoxExecutableAction extends AbstractPublisherAction {
 
 	protected void fullBrandExecutables(ExecutablesDescriptor descriptor, IBrandingAdvice advice) {
 		BrandingIron iron = new BrandingIron();
+		iron.setId(idBase);
+		iron.setVersion(version);
 		iron.setIcons(advice.getIcons());
 		String name = advice.getExecutableName();
 		if (name == null)
 			name = "eclipse"; //$NON-NLS-1$
 		iron.setName(name);
 		iron.setOS(advice.getOS());
+		// FIXME: use product's aboutText as description?
+		// iron.setDescription(advice.getAboutText());
 		try {
 			iron.brand(descriptor);
 		} catch (Exception e) {

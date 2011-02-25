@@ -14,6 +14,9 @@ import static org.easymock.EasyMock.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -44,6 +47,7 @@ public class EquinoxExecutableActionTest extends ActionTest {
 	private ExecutablesDescriptor executablesDescriptor;
 	private IArtifactRepository artifactRepository;
 	private Version version = Version.create("1.2.3"); //$NON-NLS-1$
+	private String id;
 	private String[] expectedExecutablesContents;
 
 	public void setUp() throws Exception {
@@ -89,6 +93,7 @@ public class EquinoxExecutableActionTest extends ActionTest {
 	}
 
 	private void testExecutableAction(String idBase, final String osArg, String config, File exec, File icon) {
+		id = idBase;
 		setupBrandingAdvice(osArg, configSpec, exec, icon);
 		executablesDescriptor = ExecutablesDescriptor.createDescriptor(osArg, "eclipse", exec);
 		testAction = new EquinoxExecutableAction(executablesDescriptor, config, idBase, version, flavorArg);
@@ -198,8 +203,64 @@ public class EquinoxExecutableActionTest extends ActionTest {
 			for (String path : expectedExecutablesContents) {
 				assertNotNull("executable zip missing " + path, zip.getEntry(path));
 			}
+
+			checkInfoPlist(zip);
 		} finally {
 			zip.close();
+		}
+	}
+
+	/** 
+	 * If present, check that the Info.plist had its various values
+	 * properly rewritten. 
+	 * @param zip file to check for the Info.plist
+	 */
+	private void checkInfoPlist(ZipFile zip) {
+		ZipEntry candidate = null;
+		boolean found = false;
+		for (Enumeration<? extends ZipEntry> iter = zip.entries(); !found && iter.hasMoreElements();) {
+			candidate = iter.nextElement();
+			found = candidate.getName().endsWith(".app/Contents/Info.plist");
+		}
+		if (!found) {
+			return;
+		}
+		try {
+			String contents = readContentsAndClose(zip.getInputStream(candidate));
+			assertEquals(id, getPlistStringValue(contents, "CFBundleIdentifier"));
+			assertEquals(EXECUTABLE_NAME, getPlistStringValue(contents, "CFBundleExecutable"));
+			assertEquals(EXECUTABLE_NAME, getPlistStringValue(contents, "CFBundleName"));
+			assertEquals(version.toString(), getPlistStringValue(contents, "CFBundleVersion"));
+		} catch (IOException e) {
+			fail();
+		}
+	}
+
+	private String getPlistStringValue(String contents, String key) {
+		Pattern p = Pattern.compile("<key>" + key + "</key>\\s*<string>([^<]*)</string>");
+		Matcher m = p.matcher(contents);
+		if (m.find()) {
+			return m.group(1);
+		}
+		return null;
+	}
+
+	private String readContentsAndClose(InputStream inputStream) throws IOException {
+		try {
+			StringBuilder sb = new StringBuilder();
+			Reader is = new InputStreamReader(inputStream);
+			char[] buf = new char[1024];
+			int rc;
+			while ((rc = is.read(buf)) >= 0) {
+				sb.append(buf, 0, rc - 1);
+			}
+			return sb.toString();
+		} finally {
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				/* ignored */
+			}
 		}
 	}
 
