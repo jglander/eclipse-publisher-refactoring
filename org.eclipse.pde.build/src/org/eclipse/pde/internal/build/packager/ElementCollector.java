@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build.packager;
 
+import org.eclipse.pde.internal.publishing.model.FeatureEntry;
+
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.core.runtime.CoreException;
@@ -17,7 +19,6 @@ import org.eclipse.pde.internal.build.AssemblyInformation;
 import org.eclipse.pde.internal.build.Config;
 import org.eclipse.pde.internal.build.builder.BuildDirector;
 import org.eclipse.pde.internal.build.site.BuildTimeFeature;
-import org.eclipse.pde.internal.build.site.compatibility.FeatureEntry;
 
 public class ElementCollector extends BuildDirector {
 	public ElementCollector(AssemblyInformation assemblageInformation) {

@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.eclipse.pde.internal.build.builder;
 
+import org.eclipse.pde.internal.publishing.model.FeatureEntry;
+
 import java.io.*;
 import java.util.*;
 import java.util.jar.JarFile;
@@ -21,7 +23,6 @@ import org.eclipse.pde.internal.build.*;
 import org.eclipse.pde.internal.build.ant.*;
 import org.eclipse.pde.internal.build.builder.ClasspathComputer3_0.ClasspathElement;
 import org.eclipse.pde.internal.build.site.ProfileManager;
-import org.eclipse.pde.internal.build.site.compatibility.FeatureEntry;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
 

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build;
 
+import org.eclipse.pde.internal.publishing.model.FeatureEntry;
+
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -23,7 +25,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.build.ant.AntScript;
 import org.eclipse.pde.internal.build.site.BuildTimeFeature;
 import org.eclipse.pde.internal.build.site.BuildTimeSite;
-import org.eclipse.pde.internal.build.site.compatibility.FeatureEntry;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
 

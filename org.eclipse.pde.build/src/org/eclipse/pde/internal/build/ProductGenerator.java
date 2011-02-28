@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build;
 
+import org.eclipse.pde.internal.publishing.model.FeatureEntry;
+
 import java.io.*;
 import java.util.*;
 import org.eclipse.core.runtime.*;
@@ -20,7 +22,6 @@ import org.eclipse.equinox.simpleconfigurator.manipulator.SimpleConfiguratorMani
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.VersionRange;
 import org.eclipse.pde.internal.build.site.*;
-import org.eclipse.pde.internal.build.site.compatibility.FeatureEntry;
 import org.osgi.framework.Filter;
 import org.osgi.framework.Version;
 

@@ -9,6 +9,8 @@
 
 package org.eclipse.pde.build.internal.tests;
 
+import org.eclipse.pde.internal.publishing.model.FeatureEntry;
+
 import java.io.*;
 import java.net.URL;
 import java.util.*;
@@ -25,7 +27,6 @@ import org.eclipse.pde.build.internal.tests.ant.AntUtils;
 import org.eclipse.pde.build.internal.tests.ant.TestBrandTask;
 import org.eclipse.pde.build.tests.*;
 import org.eclipse.pde.internal.build.*;
-import org.eclipse.pde.internal.build.site.compatibility.FeatureEntry;
 import org.eclipse.pde.internal.swt.tools.IconExe;
 import org.osgi.framework.Version;
 

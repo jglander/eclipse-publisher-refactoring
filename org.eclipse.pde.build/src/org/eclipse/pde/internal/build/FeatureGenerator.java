@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build;
 
+import org.eclipse.pde.internal.publishing.model.FeatureEntry;
+
 import java.io.*;
 import java.util.*;
 import org.eclipse.core.runtime.*;
@@ -19,7 +21,6 @@ import org.eclipse.osgi.service.resolver.ResolverError;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.build.Constants;
 import org.eclipse.pde.internal.build.site.*;
-import org.eclipse.pde.internal.build.site.compatibility.FeatureEntry;
 import org.osgi.framework.Filter;
 import org.osgi.framework.Version;
 

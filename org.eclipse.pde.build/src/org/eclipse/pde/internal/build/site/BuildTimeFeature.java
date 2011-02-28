@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build.site;
 
+import org.eclipse.pde.internal.publishing.model.FeatureEntry;
+
 import java.io.File;
 import java.net.*;
 import java.util.ArrayList;

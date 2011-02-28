@@ -11,6 +11,8 @@
 
 package org.eclipse.pde.internal.build.builder;
 
+import org.eclipse.pde.internal.publishing.model.FeatureEntry;
+
 import java.io.*;
 import java.net.URL;
 import java.util.*;

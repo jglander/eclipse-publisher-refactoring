@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build;
 
+import org.eclipse.pde.internal.publishing.model.FeatureEntry;
+
 import java.io.*;
 import java.util.*;
 import org.eclipse.ant.core.AntRunner;
@@ -21,7 +23,6 @@ import org.eclipse.pde.internal.build.ant.AntScript;
 import org.eclipse.pde.internal.build.ant.IScriptRunner;
 import org.eclipse.pde.internal.build.fetch.CVSFetchTaskFactory;
 import org.eclipse.pde.internal.build.site.*;
-import org.eclipse.pde.internal.build.site.compatibility.FeatureEntry;
 import org.osgi.framework.Version;
 
 /**

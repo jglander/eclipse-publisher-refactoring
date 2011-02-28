@@ -12,6 +12,8 @@
 
 package org.eclipse.pde.internal.build.builder;
 
+import org.eclipse.pde.internal.publishing.model.FeatureEntry;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -23,7 +25,6 @@ import org.eclipse.pde.internal.build.*;
 import org.eclipse.pde.internal.build.ant.AntScript;
 import org.eclipse.pde.internal.build.ant.FileSet;
 import org.eclipse.pde.internal.build.site.BuildTimeFeature;
-import org.eclipse.pde.internal.build.site.compatibility.FeatureEntry;
 
 public class FeatureBuildScriptGenerator extends AbstractScriptGenerator {
 

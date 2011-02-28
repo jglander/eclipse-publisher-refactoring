@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build;
 
+import org.eclipse.pde.internal.publishing.model.FeatureEntry;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.LinkedHashMap;

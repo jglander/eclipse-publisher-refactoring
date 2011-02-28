@@ -11,6 +11,8 @@
 
 package org.eclipse.pde.build.internal.tests;
 
+import org.eclipse.pde.internal.publishing.model.FeatureEntry;
+
 import java.io.*;
 import java.util.*;
 import java.util.jar.Attributes;
@@ -31,7 +33,6 @@ import org.eclipse.pde.build.tests.BuildConfiguration;
 import org.eclipse.pde.build.tests.PDETestCase;
 import org.eclipse.pde.internal.build.site.BuildTimeFeature;
 import org.eclipse.pde.internal.build.site.BuildTimeFeatureFactory;
-import org.eclipse.pde.internal.build.site.compatibility.FeatureEntry;
 import org.osgi.framework.FrameworkUtil;
 
 public class SourceTests extends PDETestCase {

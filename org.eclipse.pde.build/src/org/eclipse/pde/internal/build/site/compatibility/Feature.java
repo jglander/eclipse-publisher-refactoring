@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build.site.compatibility;
 
+import org.eclipse.pde.internal.publishing.model.FeatureEntry;
+import org.eclipse.pde.internal.publishing.model.IPlatformEntry;
+
 import java.util.ArrayList;
 
 /**

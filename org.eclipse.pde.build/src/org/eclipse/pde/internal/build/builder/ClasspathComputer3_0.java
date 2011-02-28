@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build.builder;
 
+import org.eclipse.pde.internal.publishing.model.FeatureEntry;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -21,7 +23,6 @@ import org.eclipse.osgi.service.resolver.*;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.build.*;
 import org.eclipse.pde.internal.build.site.PDEState;
-import org.eclipse.pde.internal.build.site.compatibility.FeatureEntry;
 import org.osgi.framework.Filter;
 
 public class ClasspathComputer3_0 implements IClasspathComputer, IPDEBuildConstants, IXMLConstants, IBuildPropertiesConstants {

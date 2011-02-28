@@ -8,7 +8,7 @@
  *  Contributors:
  *      IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.pde.internal.build.site.compatibility;
+package org.eclipse.pde.internal.publishing.model;
 
 /**
  */
@@ -28,7 +28,7 @@ public class FeatureEntry implements IPlatformEntry {
 	private boolean optional = false;
 
 	/**
-	 * Temporary field to add provisioning filters to features
+	 * Temporary field to add provorg.eclipse.pde.internal.publishing.model.filters to features
 	 */
 	private String filter;
 
@@ -75,6 +75,7 @@ public class FeatureEntry implements IPlatformEntry {
 		return isFragment;
 	}
 
+	@Override
 	public String toString() {
 		StringBuffer result = new StringBuffer();
 
@@ -84,6 +85,7 @@ public class FeatureEntry implements IPlatformEntry {
 		return result.toString();
 	}
 
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -92,6 +94,7 @@ public class FeatureEntry implements IPlatformEntry {
 		return result;
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

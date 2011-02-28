@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build;
 
+import org.eclipse.pde.internal.publishing.model.FeatureEntry;
+
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,7 +29,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.build.ant.AntScript;
 import org.eclipse.pde.internal.build.builder.BuildDirector;
 import org.eclipse.pde.internal.build.site.*;
-import org.eclipse.pde.internal.build.site.compatibility.FeatureEntry;
 import org.eclipse.pde.internal.build.site.compatibility.SiteManager;
 import org.osgi.framework.Version;
 

@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build.builder;
 
+import org.eclipse.pde.internal.publishing.model.IPlatformEntry;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.pde.internal.build.*;
-import org.eclipse.pde.internal.build.site.compatibility.IPlatformEntry;
 
 /**
  * Instance of this class and subclasses are created on a plugin / feature basis. 

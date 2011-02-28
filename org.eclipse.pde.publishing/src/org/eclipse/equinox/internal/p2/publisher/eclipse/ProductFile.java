@@ -25,6 +25,7 @@ import org.eclipse.equinox.p2.metadata.VersionedId;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.publishing.Activator;
+import org.eclipse.pde.internal.publishing.model.FeatureEntry;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -32,6 +33,8 @@ import org.xml.sax.helpers.DefaultHandler;
  *  Used to parse a .product file.
  */
 public class ProductFile extends DefaultHandler implements IProductDescriptor {
+	public final static String GENERIC_VERSION_NUMBER = "0.0.0"; //$NON-NLS-1$
+
 	private static final String ATTRIBUTE_PATH = "path"; //$NON-NLS-1$
 	private static final String ATTRIBUTE_ICON = "icon"; //$NON-NLS-1$
 	protected static final String ATTRIBUTE_FRAGMENT = "fragment"; //$NON-NLS-1$
@@ -134,9 +137,9 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 	private String id = null;
 	private String uid = null;
 	private boolean useFeatures = false;
-	protected List<IVersionedId> plugins = null;
-	protected List<IVersionedId> fragments = null;
-	private List<IVersionedId> features = null;
+	protected List<FeatureEntry> plugins = new ArrayList<FeatureEntry>();
+	protected List<FeatureEntry> fragments = new ArrayList<FeatureEntry>();
+	private final List<FeatureEntry> features = new ArrayList<FeatureEntry>();
 	private String splashLocation = null;
 	private String productName = null;
 	private String application = null;
@@ -250,19 +253,27 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 	 * be included in the list
 	 */
 	public List<IVersionedId> getBundles(boolean includeFragments) {
-		List<IVersionedId> p = plugins != null ? plugins : CollectionUtils.<IVersionedId> emptyList();
-		if (!includeFragments)
-			return p;
+		List<IVersionedId> result = new LinkedList<IVersionedId>();
 
-		List<IVersionedId> f = fragments != null ? fragments : CollectionUtils.<IVersionedId> emptyList();
-		int size = p.size() + f.size();
-		if (size == 0)
-			return CollectionUtils.emptyList();
+		for (FeatureEntry plugin : plugins) {
+			result.add(new VersionedId(plugin.getId(), plugin.getVersion()));
+		}
 
-		List<IVersionedId> both = new ArrayList<IVersionedId>(size);
-		both.addAll(p);
-		both.addAll(f);
-		return both;
+		if (includeFragments) {
+			for (FeatureEntry fragment : fragments) {
+				result.add(new VersionedId(fragment.getId(), fragment.getVersion()));
+			}
+		}
+
+		return result;
+	}
+
+	private List<FeatureEntry> getBundleEntries(boolean includeFragments) {
+		List<FeatureEntry> result = new LinkedList<FeatureEntry>();
+		result.addAll(plugins);
+		if (includeFragments)
+			result.addAll(fragments);
+		return result;
 	}
 
 	/**
@@ -278,21 +289,33 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 	 * Returns a list<VersionedName> of fragments that constitute this product.
 	 */
 	public List<IVersionedId> getFragments() {
-		return fragments != null ? fragments : CollectionUtils.<IVersionedId> emptyList();
+		List<IVersionedId> result = new LinkedList<IVersionedId>();
+
+		for (FeatureEntry fragment : fragments) {
+			result.add(new VersionedId(fragment.getId(), fragment.getVersion()));
+		}
+
+		return result;
 	}
 
 	/**
 	 * Returns a List<VersionedName> of features that constitute this product.
 	 */
 	public List<IVersionedId> getFeatures() {
-		return features != null ? features : CollectionUtils.<IVersionedId> emptyList();
+		List<IVersionedId> result = new LinkedList<IVersionedId>();
+
+		for (FeatureEntry feature : features) {
+			result.add(new VersionedId(feature.getId(), feature.getVersion()));
+		}
+
+		return result;
 	}
 
-	public List<IVersionedId> getProductEntries() {
+	public List<FeatureEntry> getProductEntries() {
 		if (useFeatures()) {
-			return getFeatures();
+			return features;
 		}
-		return getBundles(true);
+		return getBundleEntries(true);
 	}
 
 	public boolean containsPlugin(String plugin) {
@@ -306,7 +329,7 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 	public String[] getIcons(String os) {
 		Collection<String> result = icons.get(os);
 		if (result == null)
-			return null;
+			return new String[0];
 		return result.toArray(new String[result.size()]);
 	}
 
@@ -381,11 +404,11 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 	}
 
 	public Properties getConfigProperties() {
-		Properties properties = new Properties();
-		for (Entry<String, String> property : this.properties.entrySet()) {
-			properties.setProperty(property.getKey(), property.getValue());
+		Properties props = new Properties();
+		for (Entry<String, String> property : getConfigurationProperties().entrySet()) {
+			props.setProperty(property.getKey(), property.getValue());
 		}
-		return properties;
+		return props;
 	}
 
 	/**
@@ -711,23 +734,25 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 
 	protected void processPlugin(Attributes attributes) {
 		String fragment = attributes.getValue(ATTRIBUTE_FRAGMENT);
-		IVersionedId name = new VersionedId(attributes.getValue(ATTRIBUTE_ID), attributes.getValue(ATTRIBUTE_VERSION));
+		String pluginId = attributes.getValue(ATTRIBUTE_ID);
+		String pluginVersion = attributes.getValue(ATTRIBUTE_VERSION);
+
+		FeatureEntry entry = new FeatureEntry(pluginId, pluginVersion != null ? pluginVersion : GENERIC_VERSION_NUMBER, true);
+		entry.setFragment(Boolean.valueOf(fragment).booleanValue());
+
 		if (fragment != null && new Boolean(fragment).booleanValue()) {
-			if (fragments == null)
-				fragments = new ArrayList<IVersionedId>();
-			fragments.add(name);
+			fragments.add(entry);
 		} else {
-			if (plugins == null)
-				plugins = new ArrayList<IVersionedId>();
-			plugins.add(name);
+			plugins.add(entry);
 		}
 	}
 
 	private void processFeature(Attributes attributes) {
-		IVersionedId name = new VersionedId(attributes.getValue(ATTRIBUTE_ID), attributes.getValue(ATTRIBUTE_VERSION));
-		if (features == null)
-			features = new ArrayList<IVersionedId>();
-		features.add(name);
+		String featureId = attributes.getValue(ATTRIBUTE_ID);
+		String featureVersion = attributes.getValue(ATTRIBUTE_VERSION);
+		FeatureEntry featureEntry = new FeatureEntry(featureId, featureVersion != null ? featureVersion : GENERIC_VERSION_NUMBER, false);
+
+		features.add(featureEntry);
 	}
 
 	private void processProduct(Attributes attributes) {

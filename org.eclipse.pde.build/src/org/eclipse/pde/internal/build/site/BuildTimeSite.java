@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build.site;
 
+import org.eclipse.pde.internal.publishing.model.FeatureEntry;
+
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
