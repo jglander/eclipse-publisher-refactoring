@@ -398,34 +398,8 @@ public final class Utils implements IPDEBuildConstants, IBuildPropertiesConstant
 		copy(source, destination);
 	}
 
-	/**
-	 * Transfers all available bytes from the given input stream to the given output stream. 
-	 * Regardless of failure, this method closes both streams.
-	 * @throws IOException 
-	 */
-	static public void copy(File source, File destination) throws IOException {
-		InputStream in = null;
-		OutputStream out = null;
-		try {
-			in = new BufferedInputStream(new FileInputStream(source));
-			out = new BufferedOutputStream(new FileOutputStream(destination));
-			final byte[] buffer = new byte[8192];
-			while (true) {
-				int bytesRead = -1;
-				bytesRead = in.read(buffer);
-				if (bytesRead == -1)
-					break;
-				out.write(buffer, 0, bytesRead);
-			}
-		} finally {
-			try {
-				if (in != null)
-					in.close();
-			} finally {
-				if (out != null)
-					out.close();
-			}
-		}
+	public static void copy(File source, File destination) throws IOException {
+		org.eclipse.pde.internal.publishing.Utils.copy(source, destination);
 	}
 
 	public static void writeBuffer(StringBuffer buffer, File outputFile) throws IOException {

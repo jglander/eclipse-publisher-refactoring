@@ -19,7 +19,6 @@ Import-Package: org.eclipse.equinox.app;version="[1.0.0,2.0.0)",
  org.eclipse.equinox.internal.p2.metadata,
  org.eclipse.equinox.internal.p2.metadata.repository,
  org.eclipse.equinox.internal.p2.publisher,
- org.eclipse.equinox.internal.p2.swt.tools,
  org.eclipse.equinox.internal.provisional.frameworkadmin,
  org.eclipse.equinox.p2.core;version="[2.0.0,3.0.0)",
  org.eclipse.equinox.p2.metadata;version="[2.0.0,3.0.0)",
@@ -47,11 +46,14 @@ Export-Package: org.eclipse.equinox.internal.p2.publisher.compatibility;x-intern
   x-friends:="org.eclipse.equinox.p2.directorywatcher,
    org.eclipse.equinox.p2.extensionlocation,
    org.eclipse.equinox.p2.repository.tools,
-   org.eclipse.equinox.p2.updatesite",
+   org.eclipse.equinox.p2.updatesite,
+   org.eclipse.pde.build",
  org.eclipse.equinox.p2.publisher.eclipse;
   x-friends:="org.eclipse.equinox.p2.directorywatcher,
    org.eclipse.equinox.p2.extensionlocation,
    org.eclipse.equinox.p2.touchpoint.eclipse,
    org.eclipse.equinox.p2.updatesite,
-   org.eclipse.equinox.p2.repository.tools"
+   org.eclipse.equinox.p2.repository.tools",
+ org.eclipse.pde.internal.publishing;x-internal:=true,
+ org.eclipse.pde.internal.swt.tools;x-internal:=true
 Require-Bundle: org.eclipse.equinox.common;bundle-version="[3.5.0,4.0.0)"

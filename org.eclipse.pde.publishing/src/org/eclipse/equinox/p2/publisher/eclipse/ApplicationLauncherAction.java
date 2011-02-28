@@ -10,18 +10,15 @@
  ******************************************************************************/
 package org.eclipse.equinox.p2.publisher.eclipse;
 
-import org.eclipse.equinox.p2.metadata.MetadataFactory;
-import org.eclipse.equinox.p2.metadata.MetadataFactory.InstallableUnitDescription;
-
-import org.eclipse.equinox.p2.query.QueryUtil;
-
 import java.io.File;
 import java.util.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ExecutablesDescriptor;
 import org.eclipse.equinox.p2.metadata.*;
+import org.eclipse.equinox.p2.metadata.MetadataFactory.InstallableUnitDescription;
 import org.eclipse.equinox.p2.publisher.*;
 import org.eclipse.equinox.p2.publisher.actions.VersionAdvice;
+import org.eclipse.equinox.p2.query.QueryUtil;
 
 /**
  * Create IUs and CUs that represent the entire launcher for an application.  This includes
@@ -30,12 +27,12 @@ import org.eclipse.equinox.p2.publisher.actions.VersionAdvice;
  */
 public class ApplicationLauncherAction extends AbstractPublisherAction {
 
-	private String flavor;
-	private String[] configSpecs;
-	private File location;
-	private String executableName;
-	private Version version;
-	private String id;
+	private final String flavor;
+	private final String[] configSpecs;
+	private final File location;
+	private final String executableName;
+	private final Version version;
+	private final String id;
 
 	/**
 	 * Returns the id of the top level IU published by this action for the given id and flavor.
@@ -56,6 +53,7 @@ public class ApplicationLauncherAction extends AbstractPublisherAction {
 		this.location = location;
 	}
 
+	@Override
 	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor) {
 		// Create the basic actions and run them putting the IUs in a temporary result
 		Collection<IPublisherAction> actions = createActions(publisherInfo);

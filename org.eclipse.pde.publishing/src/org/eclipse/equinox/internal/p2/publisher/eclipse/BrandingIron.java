@@ -12,9 +12,9 @@
 package org.eclipse.equinox.internal.p2.publisher.eclipse;
 
 import java.io.*;
-import org.eclipse.equinox.internal.frameworkadmin.utils.Utils;
-import org.eclipse.equinox.internal.p2.swt.tools.IconExe;
 import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.pde.internal.publishing.Utils;
+import org.eclipse.pde.internal.swt.tools.IconExe;
 
 /**
  *
@@ -55,7 +55,7 @@ public class BrandingIron {
 	}
 
 	public void setIcons(String value) {
-		icons = Utils.getTokens(value, ",");//$NON-NLS-1$
+		icons = org.eclipse.equinox.internal.frameworkadmin.utils.Utils.getTokens(value, ",");//$NON-NLS-1$
 		if (icons[0].startsWith("${")) { //$NON-NLS-1$
 			if (icons.length > 1) {
 				String[] temp = new String[icons.length - 1];
@@ -138,7 +138,7 @@ public class BrandingIron {
 			}
 			if (icon != null) {
 				File targetIcon = new File(descriptor.getLocation(), "icon.xpm"); //$NON-NLS-1$
-				copy(icon, targetIcon);
+				Utils.copy(icon, targetIcon);
 				descriptor.addFile(targetIcon);
 			}
 		}
@@ -160,7 +160,7 @@ public class BrandingIron {
 			// check if the extension is one of: .l.pm, .m.pm, .s.pm, .t.pm
 			if (extension.charAt(0) == '.' && extension.endsWith(".pm") && "lmst".indexOf(extension.charAt(1)) >= 0) { //$NON-NLS-1$ //$NON-NLS-2$
 				File targetIcon = new File(root, name + extension);
-				copy(new File(icon), targetIcon);
+				Utils.copy(new File(icon), targetIcon);
 				descriptor.addFile(targetIcon);
 			}
 		}
@@ -214,7 +214,7 @@ public class BrandingIron {
 
 				initialIcon.delete();
 				descriptor.removeFile(initialIcon);
-				copy(icon, targetIcon);
+				Utils.copy(icon, targetIcon);
 				descriptor.addFile(targetIcon);
 			}
 		}
@@ -255,7 +255,7 @@ public class BrandingIron {
 		String osName = System.getProperty("os.name"); //$NON-NLS-1$
 		if (osName != null && !osName.startsWith("Windows")) { //$NON-NLS-1$
 			try {
-				String[] command = new String[] {"ln", "-sf", "../../../MacOS/" + name, name}; //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$
+				String[] command = new String[] {"ln", "-sf", "../../../MacOS/" + name, name}; //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 				Process proc = Runtime.getRuntime().exec(command, null, splashMacOSDir);
 				result = proc.waitFor();
 			} catch (IOException e) {
@@ -268,7 +268,7 @@ public class BrandingIron {
 		if (result != 0) {
 			//ln failed, or we are on windows, just copy the executable instead
 			try {
-				copy(new File(macOSDir, name), targetLauncher);
+				Utils.copy(new File(macOSDir, name), targetLauncher);
 				try {
 					Runtime.getRuntime().exec(new String[] {"chmod", "755", targetLauncher.getAbsolutePath()}); //$NON-NLS-1$ //$NON-NLS-2$
 				} catch (IOException e) {
@@ -382,7 +382,7 @@ public class BrandingIron {
 		}
 		if (!targetFile.equals(launcher)) {
 			try {
-				copy(launcher, targetFile);
+				Utils.copy(launcher, targetFile);
 			} catch (IOException e) {
 				System.out.println("Could not copy macosx launcher"); //$NON-NLS-1$
 				return;
@@ -415,8 +415,8 @@ public class BrandingIron {
 		// Eclipse.app/Contents/MacOS/rcp.ini		(brandedIni)
 		// Eclipse.app/Contents/MacOS/eclipse.ini	(ini)
 		// Eclipse.app/Contents/MacOS/Eclipse.ini	(ini2)
-		File targetFile = getCanonicalFile(new File(target, brandedIniName)); //$NON-NLS-1$//$NON-NLS-2$
-		File brandedIni = getCanonicalFile(new File(initialRoot, brandedIniName)); //$NON-NLS-1$ //$NON-NLS-2$
+		File targetFile = getCanonicalFile(new File(target, brandedIniName));
+		File brandedIni = getCanonicalFile(new File(initialRoot, brandedIniName));
 		File ini = getCanonicalFile(new File(initialRoot, "MacOS/eclipse.ini")); //$NON-NLS-1$
 		File ini2 = getCanonicalFile(new File(initialRoot, "MacOS/Eclipse.ini")); //$NON-NLS-1$
 
@@ -565,36 +565,6 @@ public class BrandingIron {
 			int end = scan(buffer, start + STRING_START.length(), STRING_END);
 			if (start > -1 && end > start) {
 				buffer.replace(start + STRING_START.length(), end, value);
-			}
-		}
-	}
-
-	/**
-	 * Transfers all available bytes from the given input stream to the given output stream. 
-	 * Regardless of failure, this method closes both streams.
-	 * @throws IOException 
-	 */
-	public void copy(File source, File destination) throws IOException {
-		InputStream in = null;
-		OutputStream out = null;
-		try {
-			in = new BufferedInputStream(new FileInputStream(source));
-			out = new BufferedOutputStream(new FileOutputStream(destination));
-			final byte[] buffer = new byte[8192];
-			while (true) {
-				int bytesRead = -1;
-				bytesRead = in.read(buffer);
-				if (bytesRead == -1)
-					break;
-				out.write(buffer, 0, bytesRead);
-			}
-		} finally {
-			try {
-				if (in != null)
-					in.close();
-			} finally {
-				if (out != null)
-					out.close();
 			}
 		}
 	}

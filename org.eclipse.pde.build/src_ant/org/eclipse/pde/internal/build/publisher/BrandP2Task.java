@@ -26,6 +26,8 @@ import org.eclipse.equinox.internal.p2.engine.phases.Collect;
 import org.eclipse.equinox.internal.p2.engine.phases.Install;
 import org.eclipse.equinox.internal.p2.metadata.TouchpointData;
 import org.eclipse.equinox.internal.p2.metadata.TouchpointInstruction;
+import org.eclipse.equinox.internal.p2.publisher.eclipse.BrandingIron;
+import org.eclipse.equinox.internal.p2.publisher.eclipse.ExecutablesDescriptor;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.internal.repository.tools.Repo2Runnable;
@@ -181,10 +183,9 @@ public class BrandP2Task extends Repo2RunnableTask {
 		BrandingIron iron = new BrandingIron();
 		iron.setName(launcherName);
 		iron.setIcons(iconsList);
-		iron.setRoot(getRootFolder());
 		iron.setOS(config.getOs());
 		try {
-			iron.brand();
+			iron.brand(ExecutablesDescriptor.createDescriptor(config.getOs(), launcherName, new File(getRootFolder())));
 		} catch (Exception e) {
 			getProject().log(TaskMessages.error_branding, e, Project.MSG_WARN);
 		}
