@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.jar.JarFile;
 import org.eclipse.core.runtime.*;
+import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.pde.internal.build.ant.*;
 import org.eclipse.pde.internal.build.builder.BuildDirector;
@@ -95,7 +96,7 @@ public class AssembleConfigScriptGenerator extends AbstractScriptGenerator {
 		for (int i = 0; i < icons.length; i++) {
 			String location = findFile(icons[i], true);
 			if (location == null) {
-				File productLocation = new File(productFile.getLocation());
+				File productLocation = productFile.getLocation();
 				File icon = new File(productLocation.getParentFile(), icons[i]);
 				if (icon.exists())
 					location = Utils.makeRelative(new Path(icon.getAbsolutePath()), new Path(workingDirectory)).toOSString();
@@ -778,10 +779,10 @@ public class AssembleConfigScriptGenerator extends AbstractScriptGenerator {
 			if (rootFileProviders.size() > 0) {
 				if (productFile != null) {
 					script.println();
-					File modFile = new File(productFile.getLocation());
+					File modFile = productFile.getLocation();
 					String modLocation = Utils.getPropertyFormat(PROPERTY_BUILD_DIRECTORY) + '/' + DEFAULT_FEATURE_LOCATION + '/' + CONTAINER_FEATURE + "/product/" + modFile.getName(); //$NON-NLS-1$
 					script.printAvailableTask(PROPERTY_P2_PRODUCT_MOD, modLocation, modLocation);
-					script.printProperty(PROPERTY_P2_PRODUCT_MOD, productFile.getLocation());
+					script.printProperty(PROPERTY_P2_PRODUCT_MOD, productFile.getLocation().getPath());
 				}
 				script.printTab();
 				script.print("<p2.generator "); //$NON-NLS-1$

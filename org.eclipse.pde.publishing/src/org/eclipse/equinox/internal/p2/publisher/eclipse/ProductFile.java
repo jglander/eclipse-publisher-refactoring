@@ -15,16 +15,17 @@ package org.eclipse.equinox.internal.p2.publisher.eclipse;
 
 import java.io.*;
 import java.util.*;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import java.util.Map.Entry;
+import javax.xml.parsers.*;
+import org.eclipse.core.runtime.*;
 import org.eclipse.equinox.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.internal.p2.core.helpers.*;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
 import org.eclipse.equinox.p2.metadata.VersionedId;
 import org.eclipse.osgi.service.datalocation.Location;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.publishing.Activator;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
+import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -116,6 +117,10 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 	private static final int STATE_LICENSE_URL = 19;
 	private static final int STATE_LICENSE_TEXT = 20;
 
+	private static final String PI_PDEBUILD = "org.eclipse.pde.build"; //$NON-NLS-1$
+	private final static int EXCEPTION_PRODUCT_FORMAT = 23;
+	private final static int EXCEPTION_PRODUCT_FILE = 24;
+
 	private int state = STATE_START;
 
 	private SAXParser parser;
@@ -142,6 +147,7 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 	private Map<String, String> properties;
 	private String licenseURL;
 	private String licenseText = null;
+	private String currentOS;
 
 	private static String normalize(String text) {
 		if (text == null || text.trim().length() == 0)
@@ -164,6 +170,34 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 		return result.toString();
 	}
 
+	public ProductFile(String location, String os) throws CoreException {
+		super();
+		this.currentOS = os;
+		this.location = new File(location);
+		try {
+			parserFactory.setNamespaceAware(true);
+			parser = parserFactory.newSAXParser();
+			InputStream in = new BufferedInputStream(new FileInputStream(location));
+			try {
+				parser.parse(new InputSource(in), this);
+			} finally {
+				try {
+					in.close();
+				} catch (IOException e) {
+					// ignore exception on close (as it was done by Utils.close() before)
+				}
+			}
+		} catch (ParserConfigurationException e) {
+			throw new CoreException(new Status(IStatus.ERROR, PI_PDEBUILD, EXCEPTION_PRODUCT_FORMAT, NLS.bind(Messages.exception_productParse, location), e));
+		} catch (SAXException e) {
+			throw new CoreException(new Status(IStatus.ERROR, PI_PDEBUILD, EXCEPTION_PRODUCT_FORMAT, NLS.bind(Messages.exception_productParse, location), e));
+		} catch (FileNotFoundException e) {
+			throw new CoreException(new Status(IStatus.ERROR, PI_PDEBUILD, EXCEPTION_PRODUCT_FILE, NLS.bind(Messages.exception_missingElement, location), null));
+		} catch (IOException e) {
+			throw new CoreException(new Status(IStatus.ERROR, PI_PDEBUILD, EXCEPTION_PRODUCT_FORMAT, NLS.bind(Messages.exception_productParse, location), e));
+		}
+	}
+
 	/**
 	 * Constructs a product file parser.
 	 */
@@ -177,8 +211,7 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 		try {
 			parser.parse(new InputSource(in), this);
 		} finally {
-			if (in != null)
-				in.close();
+			in.close();
 		}
 		parser = null;
 	}
@@ -255,6 +288,21 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 		return features != null ? features : CollectionUtils.<IVersionedId> emptyList();
 	}
 
+	public List<IVersionedId> getProductEntries() {
+		if (useFeatures()) {
+			return getFeatures();
+		}
+		return getBundles(true);
+	}
+
+	public boolean containsPlugin(String plugin) {
+		return getBundles(true).contains(plugin);
+	}
+
+	public String[] getIcons() {
+		return getIcons(currentOS);
+	}
+
 	public String[] getIcons(String os) {
 		Collection<String> result = icons.get(os);
 		if (result == null)
@@ -269,6 +317,10 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 
 	public String getConfigIniPath() {
 		return configPath;
+	}
+
+	public boolean haveCustomConfig() {
+		return configPath != null || platformSpecificConfigPaths.size() > 0;
 	}
 
 	/**
@@ -318,6 +370,22 @@ public class ProductFile extends DefaultHandler implements IProductDescriptor {
 	 */
 	public String getVersion() {
 		return (version == null || version.length() == 0) ? "0.0.0" : version; //$NON-NLS-1$
+	}
+
+	public Map<String, BundleInfo> getConfigurationInfo() {
+		Map<String, BundleInfo> result = new HashMap<String, BundleInfo>();
+		for (BundleInfo info : getBundleInfos()) {
+			result.put(info.getSymbolicName(), info);
+		}
+		return result;
+	}
+
+	public Properties getConfigProperties() {
+		Properties properties = new Properties();
+		for (Entry<String, String> property : this.properties.entrySet()) {
+			properties.setProperty(property.getKey(), property.getValue());
+		}
+		return properties;
 	}
 
 	/**
