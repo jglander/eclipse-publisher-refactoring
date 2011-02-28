@@ -1,0 +1,112 @@
+### Eclipse Workspace Patch 1.0
+#P org.eclipse.equinox.p2.extensionlocation
+Index: META-INF/MANIFEST.MF
+===================================================================
+RCS file: /cvsroot/rt/org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.extensionlocation/META-INF/MANIFEST.MF,v
+retrieving revision 1.20
+diff -u -r1.20 MANIFEST.MF
+--- META-INF/MANIFEST.MF	21 Dec 2010 15:59:33 -0000	1.20
++++ META-INF/MANIFEST.MF	28 Feb 2011 19:04:34 -0000
+@@ -22,6 +22,7 @@
+  org.eclipse.equinox.internal.provisional.p2.directorywatcher,
+  org.eclipse.equinox.p2.core;version="[2.0.0,3.0.0)",
+  org.eclipse.equinox.p2.engine;version="[2.0.0,3.0.0)",
++ org.eclipse.equinox.p2.publisher,
+  org.eclipse.equinox.p2.publisher.eclipse,
+  org.eclipse.equinox.p2.repository;version="[2.0.0,3.0.0)",
+  org.eclipse.equinox.p2.repository.artifact;version="[2.0.0,3.0.0)",
+#P org.eclipse.equinox.p2.metadata
+Index: META-INF/MANIFEST.MF
+===================================================================
+RCS file: /cvsroot/rt/org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.metadata/META-INF/MANIFEST.MF,v
+retrieving revision 1.44
+diff -u -r1.44 MANIFEST.MF
+--- META-INF/MANIFEST.MF	28 Feb 2011 01:56:14 -0000	1.44
++++ META-INF/MANIFEST.MF	28 Feb 2011 19:04:35 -0000
+@@ -19,7 +19,8 @@
+    org.eclipse.equinox.p2.publisher,
+    org.eclipse.equinox.p2.ql,
+    org.eclipse.equinox.p2.ui,
+-   org.eclipse.equinox.p2.touchpoint.eclipse",
++   org.eclipse.equinox.p2.touchpoint.eclipse,
++   org.eclipse.equinox.p2.updatesite",
+  org.eclipse.equinox.internal.p2.metadata.expression;
+   x-friends:="org.eclipse.equinox.p2.artifact.repository,
+    org.eclipse.equinox.p2.directorywatcher,
+#P org.eclipse.equinox.p2.updatesite
+Index: META-INF/MANIFEST.MF
+===================================================================
+RCS file: /cvsroot/rt/org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.updatesite/META-INF/MANIFEST.MF,v
+retrieving revision 1.32
+diff -u -r1.32 MANIFEST.MF
+--- META-INF/MANIFEST.MF	26 Aug 2010 12:55:40 -0000	1.32
++++ META-INF/MANIFEST.MF	28 Feb 2011 19:04:35 -0000
+@@ -20,6 +20,7 @@
+  org.eclipse.equinox.app;version="1.1.0",
+  org.eclipse.equinox.internal.p2.artifact.repository.simple,
+  org.eclipse.equinox.internal.p2.core.helpers,
++ org.eclipse.equinox.internal.p2.metadata,
+  org.eclipse.equinox.internal.p2.publisher.eclipse,
+  org.eclipse.equinox.internal.p2.repository,
+  org.eclipse.equinox.p2.core;version="[2.0.0,3.0.0)",
+Index: src/org/eclipse/equinox/internal/p2/updatesite/RemoteFeaturesAction.java
+===================================================================
+RCS file: /cvsroot/rt/org.eclipse.equinox/p2/bundles/org.eclipse.equinox.p2.updatesite/src/org/eclipse/equinox/internal/p2/updatesite/RemoteFeaturesAction.java,v
+retrieving revision 1.9
+diff -u -r1.9 RemoteFeaturesAction.java
+--- src/org/eclipse/equinox/internal/p2/updatesite/RemoteFeaturesAction.java	13 Jan 2010 17:29:41 -0000	1.9
++++ src/org/eclipse/equinox/internal/p2/updatesite/RemoteFeaturesAction.java	28 Feb 2011 19:04:35 -0000
+@@ -7,13 +7,15 @@
+  * Contributors: 
+  *   Code 9 - initial API and implementation
+  *   IBM - ongoing development
++ #   SAP AG - consolidation of publishers for PDE formats
+  ******************************************************************************/
+ package org.eclipse.equinox.internal.p2.updatesite;
+ 
+-import org.eclipse.equinox.p2.core.ProvisionException;
+-
+ import java.util.*;
++import java.util.Map.Entry;
+ import org.eclipse.core.runtime.*;
++import org.eclipse.equinox.internal.p2.metadata.InstallableUnit;
++import org.eclipse.equinox.p2.core.ProvisionException;
+ import org.eclipse.equinox.p2.metadata.IArtifactKey;
+ import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+ import org.eclipse.equinox.p2.publisher.*;
+@@ -64,7 +66,7 @@
+ 					mockManifest.put("Bundle-Version", entry.getVersion()); //$NON-NLS-1$
+ 					BundleDescription bundleDescription = BundlesAction.createBundleDescription(mockManifest, null);
+ 					IArtifactKey key = BundlesAction.createBundleArtifactKey(entry.getId(), entry.getVersion());
+-					IInstallableUnit[] bundleIUs = PublisherHelper.createEclipseIU(bundleDescription, entry.isUnpack(), key, extraProperties);
++					IInstallableUnit[] bundleIUs = createEclipseIU(bundleDescription, entry.isUnpack(), key, extraProperties);
+ 					for (int n = 0; n < bundleIUs.length; n++)
+ 						result.addIU(bundleIUs[n], IPublisherResult.ROOT);
+ 				}
+@@ -78,4 +80,26 @@
+ 			generateSiteReferences(feature, result, info);
+ 		}
+ 	}
++
++	private static void addExtraProperties(IInstallableUnit iiu, Map<String, String> extraProperties) {
++		if (iiu instanceof InstallableUnit) {
++			InstallableUnit iu = (InstallableUnit) iiu;
++
++			for (Entry<String, String> entry : extraProperties.entrySet()) {
++				iu.setProperty(entry.getKey(), entry.getValue());
++			}
++		}
++	}
++
++	// TODO move this to a better place?
++	public static IInstallableUnit[] createEclipseIU(BundleDescription bd, boolean isFolderPlugin, IArtifactKey key, Map<String, String> extraProperties) {
++		ArrayList<IInstallableUnit> iusCreated = new ArrayList<IInstallableUnit>(1);
++		IPublisherInfo info = new PublisherInfo();
++		String shape = isFolderPlugin ? IBundleShapeAdvice.DIR : IBundleShapeAdvice.JAR;
++		info.addAdvice(new BundleShapeAdvice(bd.getSymbolicName(), PublisherHelper.fromOSGiVersion(bd.getVersion()), shape));
++		IInstallableUnit iu = BundlesAction.createBundleIU(bd, key, info);
++		addExtraProperties(iu, extraProperties);
++		iusCreated.add(iu);
++		return (iusCreated.toArray(new IInstallableUnit[iusCreated.size()]));
++	}
+ }
