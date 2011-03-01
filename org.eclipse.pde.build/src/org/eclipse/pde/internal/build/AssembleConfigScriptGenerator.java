@@ -94,18 +94,20 @@ public class AssembleConfigScriptGenerator extends AbstractScriptGenerator {
 			return result;
 		String[] icons = os != null ? productFile.getIcons(os) : productFile.getIcons();
 		for (int i = 0; i < icons.length; i++) {
-			String location = findFile(icons[i], true);
+
+			String icon = Utils.makeRelative(new Path(icons[i]), new Path(productFile.getLocation().getParent())).toOSString();
+
+			String location = findFile(icon, true);
 			if (location == null) {
-				File productLocation = productFile.getLocation();
-				File icon = new File(productLocation.getParentFile(), icons[i]);
-				if (icon.exists())
-					location = Utils.makeRelative(new Path(icon.getAbsolutePath()), new Path(workingDirectory)).toOSString();
+				File iconFile = new File(productFile.getLocation().getParentFile(), icon);
+				if (iconFile.exists())
+					location = Utils.makeRelative(new Path(iconFile.getAbsolutePath()), new Path(workingDirectory)).toOSString();
 			}
 			if (location != null)
 				result += ", " + Utils.getPropertyFormat(PROPERTY_BASEDIR) + '/' + location; //$NON-NLS-1$
 			else {
-				result += ", " + Utils.getPropertyFormat(PROPERTY_BUILD_DIRECTORY) + '/' + DEFAULT_PLUGIN_LOCATION + '/' + icons[i]; //$NON-NLS-1$
-				result += ", " + Utils.getPropertyFormat(PROPERTY_BUILD_DIRECTORY) + '/' + DEFAULT_FEATURE_LOCATION + '/' + icons[i]; //$NON-NLS-1$
+				result += ", " + Utils.getPropertyFormat(PROPERTY_BUILD_DIRECTORY) + '/' + DEFAULT_PLUGIN_LOCATION + '/' + icon; //$NON-NLS-1$
+				result += ", " + Utils.getPropertyFormat(PROPERTY_BUILD_DIRECTORY) + '/' + DEFAULT_FEATURE_LOCATION + '/' + icon; //$NON-NLS-1$
 			}
 		}
 		return result;
