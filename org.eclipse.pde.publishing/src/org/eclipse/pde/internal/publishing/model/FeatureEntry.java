@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.publishing.model;
 
+import org.eclipse.equinox.p2.metadata.Version;
+
 /**
  */
 public class FeatureEntry implements IPlatformEntry {
 	private final String id;
-	private final String version;
+	private String version;
 	private String url;
 	private String os;
 	private String ws;
@@ -26,7 +28,7 @@ public class FeatureEntry implements IPlatformEntry {
 	private boolean isRequires = false;
 	private Boolean unpack = null;
 	private boolean optional = false;
-
+	private boolean isPatch = false;
 	/**
 	 * Temporary field to add provorg.eclipse.pde.internal.publishing.model.filters to features
 	 */
@@ -43,55 +45,8 @@ public class FeatureEntry implements IPlatformEntry {
 
 	public FeatureEntry(String id, String version, boolean isPlugin) {
 		this.id = id;
-		this.version = version;
+		this.version = Version.parseVersion(version).toString();
 		this.isPlugin = isPlugin;
-	}
-
-	public String getURL() {
-		return url;
-	}
-
-	public void setURL(String value) {
-		url = value;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public boolean isPlugin() {
-		return isPlugin;
-	}
-
-	public boolean isRequires() {
-		return isRequires;
-	}
-
-	public boolean isFragment() {
-		return isFragment;
-	}
-
-	@Override
-	public String toString() {
-		StringBuffer result = new StringBuffer();
-
-		result.append(isPlugin ? "Plugin: " : "Feature: "); //$NON-NLS-1$ //$NON-NLS-2$
-		result.append(id != null ? id.toString() : ""); //$NON-NLS-1$
-		result.append(version != null ? " " + version.toString() : ""); //$NON-NLS-1$ //$NON-NLS-2$
-		return result.toString();
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((version == null) ? 0 : version.hashCode());
-		return result;
 	}
 
 	@Override
@@ -113,7 +68,80 @@ public class FeatureEntry implements IPlatformEntry {
 				return false;
 		} else if (!version.equals(other.version))
 			return false;
+
+		if (isPlugin() != other.isPlugin())
+			return false;
+		if (isRequires() != other.isRequires())
+			return false;
 		return true;
+	}
+
+	public String getArch() {
+		return arch;
+	}
+
+	/**
+	 * Temporary method to add provisioning filters to features
+	 */
+	public String getFilter() {
+		return filter;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public String getMatch() {
+		return match;
+	}
+
+	public String getNL() {
+		return nl;
+	}
+
+	public String getOS() {
+		return os;
+	}
+
+	public String getURL() {
+		return url;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public String getWS() {
+		return ws;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((version == null) ? 0 : version.hashCode());
+		return result;
+	}
+
+	public boolean isFragment() {
+		return isFragment;
+	}
+
+	public boolean isOptional() {
+		return optional;
+	}
+
+	public boolean isPlugin() {
+		return isPlugin;
+	}
+
+	public boolean isRequires() {
+		return isRequires;
+	}
+
+	public boolean isUnpack() {
+		return (unpack == null || unpack.booleanValue());
 	}
 
 	public void setEnvironment(String os, String ws, String arch, String nl) {
@@ -121,26 +149,6 @@ public class FeatureEntry implements IPlatformEntry {
 		this.ws = ws;
 		this.arch = arch;
 		this.nl = nl;
-	}
-
-	public void setFragment(boolean value) {
-		isFragment = value;
-	}
-
-	public void setUnpack(boolean value) {
-		unpack = Boolean.valueOf(value);
-	}
-
-	public boolean isUnpack() {
-		return (unpack == null || unpack.booleanValue());
-	}
-
-	public boolean unpackSet() {
-		return unpack != null;
-	}
-
-	public void setOptional(boolean value) {
-		optional = value;
 	}
 
 	/**
@@ -151,34 +159,45 @@ public class FeatureEntry implements IPlatformEntry {
 
 	}
 
-	/**
-	 * Temporary method to add provisioning filters to features
-	 */
-	public String getFilter() {
-		return filter;
+	public void setFragment(boolean value) {
+		isFragment = value;
 	}
 
-	public String getMatch() {
-		return match;
+	public void setOptional(boolean value) {
+		optional = value;
 	}
 
-	public boolean isOptional() {
-		return optional;
+	public void setUnpack(boolean value) {
+		unpack = Boolean.valueOf(value);
 	}
 
-	public String getOS() {
-		return os;
+	public void setURL(String value) {
+		url = value;
 	}
 
-	public String getWS() {
-		return ws;
+	public void setVersion(String value) {
+		version = Version.parseVersion(value).toString();
+	}
+	
+	@Override
+	public String toString() {
+		StringBuffer result = new StringBuffer();
+		result.append(isRequires ? "Requires: " : ""); //$NON-NLS-1$ //$NON-NLS-2$
+		result.append(isPlugin ? "Plugin: " : "Feature: "); //$NON-NLS-1$ //$NON-NLS-2$
+		result.append(id != null ? id.toString() : ""); //$NON-NLS-1$
+		result.append(version != null ? " " + version.toString() : ""); //$NON-NLS-1$ //$NON-NLS-2$
+		return result.toString();
 	}
 
-	public String getArch() {
-		return arch;
+	public boolean unpackSet() {
+		return unpack != null;
 	}
 
-	public String getNL() {
-		return nl;
+	public boolean isPatch() {
+		return isPatch;
+	}
+
+	public void setPatch(boolean patch) {
+		this.isPatch = patch;
 	}
 }
