@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ *  Copyright (c) 2000, 2008 IBM Corporation and others.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Eclipse Public License v1.0
+ *  which accompanies this distribution, and is available at
+ *  http://www.eclipse.org/legal/epl-v10.html
+ * 
+ *  Contributors:
+ *      IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.equinox.p2.publisher.eclipse;
 
@@ -14,7 +14,7 @@ import org.eclipse.equinox.p2.metadata.Version;
 
 /**
  */
-public class FeatureEntry {
+public class FeatureEntry implements IPlatformEntry {
 	private final String id;
 	private String version;
 	private String url;
@@ -26,17 +26,18 @@ public class FeatureEntry {
 	private final boolean isPlugin;
 	private boolean isFragment = false;
 	private boolean isRequires = false;
-	private boolean unpack = true;
+	private Boolean unpack = null;
 	private boolean optional = false;
 	private boolean isPatch = false;
+	/**
+	 * Temporary field to add provorg.eclipse.pde.internal.publishing.model.filters to features
+	 */
 	private String filter;
 
 	public static FeatureEntry createRequires(String id, String version, String match, String filter, boolean isPlugin) {
 		FeatureEntry result = new FeatureEntry(id, version, isPlugin);
 		result.match = match;
 		result.isRequires = true;
-		// for requires we don't care what the form is so leave it as false (JAR'd)
-		result.unpack = false;
 		if (filter != null)
 			result.setFilter(filter);
 		return result;
@@ -48,6 +49,7 @@ public class FeatureEntry {
 		this.isPlugin = isPlugin;
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -78,6 +80,9 @@ public class FeatureEntry {
 		return arch;
 	}
 
+	/**
+	 * Temporary method to add provisioning filters to features
+	 */
 	public String getFilter() {
 		return filter;
 	}
@@ -110,6 +115,7 @@ public class FeatureEntry {
 		return ws;
 	}
 
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -135,7 +141,7 @@ public class FeatureEntry {
 	}
 
 	public boolean isUnpack() {
-		return unpack;
+		return (unpack == null || unpack.booleanValue());
 	}
 
 	public void setEnvironment(String os, String ws, String arch, String nl) {
@@ -145,6 +151,9 @@ public class FeatureEntry {
 		this.nl = nl;
 	}
 
+	/**
+	 * Temporary method to add provisioning filters to features
+	 */
 	public void setFilter(String filter) {
 		this.filter = filter;
 
@@ -159,7 +168,7 @@ public class FeatureEntry {
 	}
 
 	public void setUnpack(boolean value) {
-		unpack = value;
+		unpack = Boolean.valueOf(value);
 	}
 
 	public void setURL(String value) {
@@ -169,7 +178,8 @@ public class FeatureEntry {
 	public void setVersion(String value) {
 		version = Version.parseVersion(value).toString();
 	}
-
+	
+	@Override
 	public String toString() {
 		StringBuffer result = new StringBuffer();
 		result.append(isRequires ? "Requires: " : ""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -177,6 +187,10 @@ public class FeatureEntry {
 		result.append(id != null ? id.toString() : ""); //$NON-NLS-1$
 		result.append(version != null ? " " + version.toString() : ""); //$NON-NLS-1$ //$NON-NLS-2$
 		return result.toString();
+	}
+
+	public boolean unpackSet() {
+		return unpack != null;
 	}
 
 	public boolean isPatch() {

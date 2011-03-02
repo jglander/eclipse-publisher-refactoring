@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build.site;
 
-import org.eclipse.pde.internal.publishing.model.FeatureEntry;
-
+import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.osgi.service.resolver.VersionRange;
 import org.eclipse.pde.internal.build.Utils;
 import org.osgi.framework.Version;

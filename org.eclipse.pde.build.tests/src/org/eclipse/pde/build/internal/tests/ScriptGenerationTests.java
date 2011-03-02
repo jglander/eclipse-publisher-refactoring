@@ -9,8 +9,6 @@
 
 package org.eclipse.pde.build.internal.tests;
 
-import org.eclipse.pde.internal.publishing.model.FeatureEntry;
-
 import java.io.*;
 import java.net.URL;
 import java.util.*;
@@ -23,6 +21,7 @@ import org.apache.tools.ant.taskdefs.*;
 import org.apache.tools.ant.types.Path;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
+import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.osgi.service.resolver.VersionRange;
 import org.eclipse.pde.build.internal.tests.ant.AntUtils;
 import org.eclipse.pde.build.tests.BuildConfiguration;

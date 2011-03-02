@@ -9,8 +9,6 @@
 
 package org.eclipse.pde.build.internal.tests;
 
-import org.eclipse.pde.internal.publishing.model.FeatureEntry;
-
 import java.io.*;
 import java.net.URL;
 import java.util.*;
@@ -21,6 +19,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
+import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.StateObjectFactory;
 import org.eclipse.pde.build.internal.tests.ant.AntUtils;

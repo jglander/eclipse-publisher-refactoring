@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build.site.compatibility;
 
-import org.eclipse.pde.internal.publishing.model.FeatureEntry;
-
 import java.io.*;
 import java.net.URL;
 import javax.xml.parsers.*;
 import org.eclipse.core.runtime.*;
+import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.build.IPDEBuildConstants;
 import org.eclipse.pde.internal.build.Messages;

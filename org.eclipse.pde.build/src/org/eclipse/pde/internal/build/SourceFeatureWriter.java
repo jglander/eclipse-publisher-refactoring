@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build;
 
-import org.eclipse.pde.internal.publishing.model.FeatureEntry;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.pde.internal.build.site.BuildTimeSite;
 import org.eclipse.pde.internal.build.site.compatibility.Feature;
 

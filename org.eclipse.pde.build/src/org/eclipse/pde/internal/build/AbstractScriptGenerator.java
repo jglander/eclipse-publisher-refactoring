@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build;
 
-import org.eclipse.pde.internal.publishing.model.FeatureEntry;
-
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,6 +21,7 @@ import org.eclipse.equinox.p2.core.IAgentLocation;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.engine.IProfile;
 import org.eclipse.equinox.p2.engine.IProfileRegistry;
+import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.State;
 import org.eclipse.osgi.util.NLS;

@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build.tasks;
 
-import org.eclipse.pde.internal.publishing.model.FeatureEntry;
-
 import java.io.*;
 import java.util.*;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.eclipse.core.runtime.*;
+import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.build.*;
 import org.eclipse.pde.internal.build.site.BuildTimeFeature;

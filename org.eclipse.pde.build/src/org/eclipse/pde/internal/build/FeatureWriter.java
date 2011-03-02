@@ -10,18 +10,18 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build;
 
-import org.eclipse.pde.internal.publishing.model.FeatureEntry;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.eclipse.core.runtime.*;
+import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.build.site.BuildTimeFeature;
 import org.eclipse.pde.internal.build.site.BuildTimeSite;
-import org.eclipse.pde.internal.build.site.compatibility.*;
+import org.eclipse.pde.internal.build.site.compatibility.Feature;
+import org.eclipse.pde.internal.build.site.compatibility.URLEntry;
 
 public class FeatureWriter extends XMLWriter implements IPDEBuildConstants {
 	protected Feature feature;

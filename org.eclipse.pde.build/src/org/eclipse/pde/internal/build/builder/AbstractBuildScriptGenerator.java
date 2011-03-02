@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build.builder;
 
-import org.eclipse.pde.internal.publishing.model.IPlatformEntry;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.p2.publisher.eclipse.IPlatformEntry;
 import org.eclipse.pde.internal.build.*;
 
 /**

@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build.site;
 
-import org.eclipse.pde.internal.publishing.model.FeatureEntry;
-
 import java.io.File;
 import java.net.*;
 import java.util.ArrayList;
 import org.eclipse.core.runtime.URIUtil;
+import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.pde.build.Constants;
 import org.eclipse.pde.internal.build.IPDEBuildConstants;
 import org.eclipse.pde.internal.build.Utils;
-import org.eclipse.pde.internal.build.site.compatibility.*;
+import org.eclipse.pde.internal.build.site.compatibility.Feature;
+import org.eclipse.pde.internal.build.site.compatibility.SiteManager;
 
 public class BuildTimeFeature extends Feature {
 	/**

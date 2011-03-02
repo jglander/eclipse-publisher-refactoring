@@ -12,12 +12,11 @@
 
 package org.eclipse.pde.internal.build.builder;
 
-import org.eclipse.pde.internal.publishing.model.FeatureEntry;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import org.eclipse.core.runtime.*;
+import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.build.Constants;
