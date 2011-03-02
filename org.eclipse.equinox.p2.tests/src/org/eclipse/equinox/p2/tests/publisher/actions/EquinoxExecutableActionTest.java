@@ -63,7 +63,7 @@ public class EquinoxExecutableActionTest extends ActionTest {
 		File icon = File.createTempFile(EXECUTABLE_NAME, ".icns");
 		FileUtils.copyStream(new FileInputStream(new File(MAC_EXEC, "eclipse.app/Contents/Resources/eclipse.icns")), true, new FileOutputStream(icon), true);
 
-		expectedExecutablesContents = new String[] {EXECUTABLE_NAME + ".app", EXECUTABLE_NAME + ".app/Contents/Info.plist", EXECUTABLE_NAME + ".app/Contents/MacOS/" + EXECUTABLE_NAME, EXECUTABLE_NAME + ".app/Contents/MacOS/" + EXECUTABLE_NAME + ".ini", EXECUTABLE_NAME + ".app/Contents/Resources/eclipse.icns"};
+		expectedExecutablesContents = new String[] {EXECUTABLE_NAME + ".app", EXECUTABLE_NAME + ".app/Contents/Info.plist", EXECUTABLE_NAME + ".app/Contents/MacOS/" + EXECUTABLE_NAME, EXECUTABLE_NAME + ".app/Contents/MacOS/" + EXECUTABLE_NAME + ".ini", EXECUTABLE_NAME + ".app/Contents/Resources/" + icon.getName()};
 		testExecutableAction("mac", "macosx", macConfig, MAC_EXEC, icon); //$NON-NLS-1$//$NON-NLS-2$
 	}
 
@@ -71,7 +71,7 @@ public class EquinoxExecutableActionTest extends ActionTest {
 		File icon = File.createTempFile(EXECUTABLE_NAME, ".icns");
 		FileUtils.copyStream(new FileInputStream(new File(MAC_EXEC, "eclipse.app/Contents/Resources/eclipse.icns")), true, new FileOutputStream(icon), true);
 
-		expectedExecutablesContents = new String[] {EXECUTABLE_NAME + ".app", EXECUTABLE_NAME + ".app/Contents/Info.plist", EXECUTABLE_NAME + ".app/Contents/MacOS/" + EXECUTABLE_NAME, EXECUTABLE_NAME + ".app/Contents/MacOS/" + EXECUTABLE_NAME + ".ini", EXECUTABLE_NAME + ".app/Contents/Resources/eclipse.icns"};
+		expectedExecutablesContents = new String[] {EXECUTABLE_NAME + ".app", EXECUTABLE_NAME + ".app/Contents/Info.plist", EXECUTABLE_NAME + ".app/Contents/MacOS/" + EXECUTABLE_NAME, EXECUTABLE_NAME + ".app/Contents/MacOS/" + EXECUTABLE_NAME + ".ini", EXECUTABLE_NAME + ".app/Contents/Resources/" + icon.getName()};
 		testExecutableAction("macCocoa", "macosx", macConfigCocoa, MAC_EXEC, icon); //$NON-NLS-1$//$NON-NLS-2$
 	}
 

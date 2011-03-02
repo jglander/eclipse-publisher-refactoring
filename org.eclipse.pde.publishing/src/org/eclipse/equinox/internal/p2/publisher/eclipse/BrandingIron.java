@@ -200,16 +200,22 @@ public class BrandingIron {
 		String iconName = ""; //$NON-NLS-1$
 		if (brandIcons) {
 			File icon = null;
-			if (icons.length > 1)
-				for (int i = 0; i < icons.length; i++) {
-					if (icons[i].toLowerCase().endsWith(".icns")) { //$NON-NLS-1$
-						icon = new File(icons[i]);
+			for (int i = 0; i < icons.length; i++) {
+				if (icons[i].toLowerCase().endsWith(".icns")) { //$NON-NLS-1$
+					icon = new File(icons[i]);
+					if (icon.exists()) {
 						break;
 					}
 				}
+			}
 			if (icon != null) {
-				iconName = name + ".icns"; //$NON-NLS-1$
+				iconName = icon.getName(); // was previously: name + ".icns"
 				File initialIcon = new File(initialRoot, "Resources/Eclipse.icns"); //$NON-NLS-1$
+				try {
+					// canonicalize to ensure case matches
+					initialIcon = initialIcon.getCanonicalFile();
+				} catch (IOException e) { /*ignore*/
+				}
 				File targetIcon = new File(target, "Resources/" + iconName); //$NON-NLS-1$
 
 				initialIcon.delete();
