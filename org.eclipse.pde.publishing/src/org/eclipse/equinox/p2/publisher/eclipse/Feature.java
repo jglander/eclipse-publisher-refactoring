@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2009 IBM Corporation and others.
+ *  Copyright (c) 2000, 2011 IBM Corporation and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
@@ -7,22 +7,25 @@
  * 
  *  Contributors:
  *     IBM Corporation - initial API and implementation
+ *     SAP AG - consolidation of publishers for PDE formats
  *******************************************************************************/
 package org.eclipse.equinox.p2.publisher.eclipse;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * 
  * Feature information
  */
-public class Feature {
+public class Feature implements IPlatformEntry {
 
 	private final String id;
 	private String version;
 	private String label;
 	private String image;
-	private String pluginId;
+	private String brandingPlugin;
 	private boolean primary = false;
 	private boolean exclusive = false;
 	private String application;
@@ -30,6 +33,8 @@ public class Feature {
 
 	private URLEntry description;
 	private URLEntry license;
+	private String licenseFeature;
+	private String licenseFeatureVersion;
 	private URLEntry copyright;
 
 	private String installHandler;
@@ -80,6 +85,10 @@ public class Feature {
 
 	public String getArch() {
 		return arch;
+	}
+
+	public String getBrandingPlugin() {
+		return brandingPlugin;
 	}
 
 	public String getColocationAffinity() {
@@ -152,6 +161,14 @@ public class Feature {
 		return null;
 	}
 
+	public String getLicenseFeature() {
+		return licenseFeature;
+	}
+
+	public String getLicenseFeatureVersion() {
+		return licenseFeatureVersion;
+	}
+
 	public String getLicenseURL() {
 		if (license != null)
 			return license.getURL();
@@ -174,16 +191,24 @@ public class Feature {
 		return os;
 	}
 
-	public String getPlugin() {
-		return pluginId;
-	}
-
 	public String getProviderName() {
 		return providerName;
 	}
 
 	public URLEntry getUpdateSite() {
 		return updateSite;
+	}
+
+	public String getUpdateSiteLabel() {
+		if (updateSite != null)
+			return updateSite.getAnnotation();
+		return null;
+	}
+
+	public String getUpdateSiteURL() {
+		if (updateSite != null)
+			return updateSite.getURL();
+		return null;
 	}
 
 	public String getVersion() {
@@ -202,8 +227,18 @@ public class Feature {
 		return primary;
 	}
 
+	public boolean removeEntry(FeatureEntry entry) {
+		if (entry == null || entries == null)
+			return false;
+		return entries.remove(entry);
+	}
+
 	public void setApplication(String application) {
 		this.application = application;
+	}
+
+	public void setBrandingPlugin(String brandingPlugin) {
+		this.brandingPlugin = brandingPlugin;
 	}
 
 	public void setColocationAffinity(String colocationAffinity) {
@@ -271,6 +306,14 @@ public class Feature {
 		this.license.setAnnotation(license);
 	}
 
+	public void setLicenseFeature(String name) {
+		this.licenseFeature = name;
+	}
+
+	public void setLicenseFeatureVersion(String version) {
+		this.licenseFeatureVersion = version;
+	}
+
 	public void setLicenseURL(String licenseURL) {
 		if (this.license == null)
 			this.license = new URLEntry();
@@ -283,10 +326,6 @@ public class Feature {
 
 	public void setLocation(String location) {
 		this.location = location;
-	}
-
-	public void setPlugin(String pluginId) {
-		this.pluginId = pluginId;
 	}
 
 	public void setPrimary(boolean primary) {
@@ -309,10 +348,6 @@ public class Feature {
 		this.updateSite.setURL(updateSiteURL);
 	}
 
-	public void setURL(String value) {
-		//
-	}
-
 	public void setVersion(String version) {
 		this.version = version;
 	}
@@ -320,6 +355,7 @@ public class Feature {
 	/**
 	 * For debugging purposes only.
 	 */
+	@Override
 	public String toString() {
 		return "Feature " + id + " version: " + version; //$NON-NLS-1$ //$NON-NLS-2$
 	}

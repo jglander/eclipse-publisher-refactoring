@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,18 +8,30 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Cloudsmith Inc - split into FeatureParser and FeatureManifestParser
+ *     SAP AG - consolidation of publishers for PDE formats
  *******************************************************************************/
 package org.eclipse.equinox.internal.p2.publisher.eclipse;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.parsers.*;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.p2.publisher.eclipse.Feature;
 import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.osgi.util.NLS;
-import org.xml.sax.*;
+import org.eclipse.pde.internal.publishing.Activator;
+import org.eclipse.pde.internal.publishing.Constants;
+import org.eclipse.pde.internal.publishing.Messages;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -32,8 +44,10 @@ public class FeatureManifestParser extends DefaultHandler {
 	protected Feature result;
 	private URL url;
 	private StringBuffer characters = null;
+	private MultiStatus status = null;
+	private boolean hasImports = false;
 
-	private List<String> messageKeys = new ArrayList<String>();
+	private final List<String> messageKeys = new ArrayList<String>();
 
 	public FeatureManifestParser() {
 		this(true);
@@ -53,6 +67,7 @@ public class FeatureManifestParser extends DefaultHandler {
 		}
 	}
 
+	@Override
 	public void characters(char[] ch, int start, int length) {
 		if (characters == null)
 			return;
@@ -63,7 +78,11 @@ public class FeatureManifestParser extends DefaultHandler {
 		return new Feature(id, version);
 	}
 
+	@Override
 	public void endElement(String uri, String localName, String qName) {
+		if ("requires".equals(localName) && !hasImports) { //$NON-NLS-1$
+			error(Messages.feature_parse_emptyRequires);
+		}
 		if (characters == null)
 			return;
 		if ("description".equals(localName)) { //$NON-NLS-1$
@@ -74,6 +93,22 @@ public class FeatureManifestParser extends DefaultHandler {
 			result.setCopyright(localize(characters.toString().trim()));
 		}
 		characters = null;
+	}
+
+	private void error(String message) {
+		if (status == null) {
+			String msg = NLS.bind(Messages.exception_featureParse, url.toExternalForm());
+			status = new MultiStatus(Activator.ID, Constants.EXCEPTION_FEATURE_PARSE, msg, null);
+		}
+		status.add(new Status(IStatus.ERROR, Activator.ID, Constants.EXCEPTION_FEATURE_PARSE, message, null));
+	}
+
+	public MultiStatus getStatus() {
+		return status;
+	}
+
+	public List<String> getMessageKeys() {
+		return messageKeys;
 	}
 
 	public Feature getResult() {
@@ -92,20 +127,11 @@ public class FeatureManifestParser extends DefaultHandler {
 	 * Parse the given input stream and return a feature object
 	 * or null.
 	 */
-	public Feature parse(InputStream in) {
+	public Feature parse(InputStream in, URL featureURL) throws SAXException, IOException {
 		result = null;
-		try {
-			parser.parse(new InputSource(in), this);
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		url = featureURL;
+		parser.parse(new InputSource(in), this);
 		return result;
-	}
-
-	public List<String> getMessageKeys() {
-		return messageKeys;
 	}
 
 	private void processCopyright(Attributes attributes) {
@@ -131,7 +157,7 @@ public class FeatureManifestParser extends DefaultHandler {
 
 		if (id == null || id.trim().equals("") //$NON-NLS-1$
 				|| ver == null || ver.trim().equals("")) { //$NON-NLS-1$
-			//			System.out.println(NLS.bind(Messages.FeatureParser_IdOrVersionInvalid, (new String[] { id, ver})));
+			error(NLS.bind(Messages.feature_parse_invalidIdOrVersion, (new String[] {id, ver})));
 		} else {
 			result = createFeature(id, ver);
 
@@ -142,23 +168,16 @@ public class FeatureManifestParser extends DefaultHandler {
 			result.setEnvironment(os, ws, arch, nl);
 
 			result.setApplication(attributes.getValue("application")); //$NON-NLS-1$
-			result.setPlugin(attributes.getValue("plugin")); //$NON-NLS-1$
+			result.setBrandingPlugin(attributes.getValue("plugin")); //$NON-NLS-1$
 			result.setExclusive(Boolean.valueOf(attributes.getValue("exclusive")).booleanValue()); //$NON-NLS-1$
 			result.setPrimary(Boolean.valueOf(attributes.getValue("primary")).booleanValue()); //$NON-NLS-1$
 			result.setColocationAffinity(attributes.getValue("colocation-affinity")); //$NON-NLS-1$
 
-			//TODO rootURLs
-			if (url != null && "file".equals(url.getProtocol())) { //$NON-NLS-1$
-				File f = new File(url.getFile().replace('/', File.separatorChar));
-				result.setURL("features" + "/" + f.getParentFile().getName() + "/");// + f.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			} else {
-				// externalized URLs might be in relative form, ensure they are absolute				
-				//				feature.setURL(Utils.makeAbsolute(Utils.getInstallURL(), url).toExternalForm());
-			}
-
 			result.setProviderName(localize(attributes.getValue("provider-name"))); //$NON-NLS-1$
 			result.setLabel(localize(attributes.getValue("label"))); //$NON-NLS-1$
 			result.setImage(attributes.getValue("image")); //$NON-NLS-1$
+			result.setLicenseFeature(attributes.getValue("license-feature")); //$NON-NLS-1$
+			result.setLicenseFeatureVersion(attributes.getValue("license-feature-version")); //$NON-NLS-1$
 
 			//			Utils.debug("End process DefaultFeature tag: id:" +id + " ver:" +ver + " url:" + feature.getURL()); 	 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
@@ -178,14 +197,18 @@ public class FeatureManifestParser extends DefaultHandler {
 			id = attributes.getValue("plugin"); //$NON-NLS-1$
 			entry = FeatureEntry.createRequires(id, attributes.getValue("version"), attributes.getValue("match"), attributes.getValue("filter"), true); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
+		hasImports = true;
 		result.addEntry(entry);
 	}
 
 	private void processIncludes(Attributes attributes) {
 		FeatureEntry entry = new FeatureEntry(attributes.getValue("id"), attributes.getValue("version"), false); //$NON-NLS-1$ //$NON-NLS-2$
-		String flag = attributes.getValue("optional"); //$NON-NLS-1$
-		if (flag != null)
-			entry.setOptional(Boolean.valueOf(flag).booleanValue());
+		String unpack = attributes.getValue("unpack"); //$NON-NLS-1$
+		if (unpack != null)
+			entry.setUnpack(Boolean.valueOf(unpack).booleanValue());
+		String optional = attributes.getValue("optional"); //$NON-NLS-1$
+		if (optional != null)
+			entry.setOptional(Boolean.valueOf(optional).booleanValue());
 		setEnvironment(attributes, entry);
 		String filter = attributes.getValue("filter"); //$NON-NLS-1$
 		if (filter != null)
@@ -209,7 +232,7 @@ public class FeatureManifestParser extends DefaultHandler {
 		String version = attributes.getValue("version"); //$NON-NLS-1$
 
 		if (id == null || id.trim().equals("") || version == null || version.trim().equals("")) { //$NON-NLS-1$ //$NON-NLS-2$
-			System.out.println(NLS.bind("FeatureParser#processPlugin, ID {0} or version {1} invalid", (new String[] {id, version}))); //$NON-NLS-1$
+			error(NLS.bind(Messages.feature_parse_invalidIdOrVersion, (new String[] {id, version})));
 		} else {
 			FeatureEntry plugin = new FeatureEntry(id, version, true);
 			setEnvironment(attributes, plugin);
@@ -241,6 +264,7 @@ public class FeatureManifestParser extends DefaultHandler {
 		entry.setEnvironment(os, ws, arch, nl);
 	}
 
+	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) {
 		//		Utils.debug("Start Element: uri:" + uri + " local Name:" + localName + " qName:" + qName); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		if ("plugin".equals(localName)) { //$NON-NLS-1$

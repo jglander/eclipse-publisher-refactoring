@@ -13,7 +13,10 @@ package org.eclipse.pde.internal.publishing;
 
 public final class Constants {
 
-	public final static String ECLIPSE_BUNDLE_SHAPE = "Eclipse-BundleShape"; //$NON-NLS-1$
-	public static final String BUNDLE_EQUINOX_LAUNCHER = "org.eclipse.equinox.launcher"; //$NON-NLS-1$
+	public static final String ECLIPSE_BUNDLE_SHAPE = "Eclipse-BundleShape"; //$NON-NLS-1$
 	public static final String BUNDLE_CLASSPATH = org.osgi.framework.Constants.BUNDLE_CLASSPATH;
+
+	public static final String BUNDLE_EQUINOX_LAUNCHER = "org.eclipse.equinox.launcher"; //$NON-NLS-1$
+
+	public static final int EXCEPTION_FEATURE_PARSE = 17;
 }

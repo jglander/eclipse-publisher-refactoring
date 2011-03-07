@@ -77,8 +77,8 @@ public class FeaturesAction extends AbstractPublisherAction {
 			iu.setCopyright(MetadataFactory.createCopyright(toURIOrNull(feature.getCopyrightURL()), feature.getCopyright()));
 		if (feature.getApplication() != null)
 			iu.setProperty(UPDATE_FEATURE_APPLICATION_PROP, feature.getApplication());
-		if (feature.getPlugin() != null)
-			iu.setProperty(UPDATE_FEATURE_PLUGIN_PROP, feature.getPlugin());
+		if (feature.getBrandingPlugin() != null)
+			iu.setProperty(UPDATE_FEATURE_PLUGIN_PROP, feature.getBrandingPlugin());
 		if (feature.isExclusive())
 			iu.setProperty(UPDATE_FEATURE_EXCLUSIVE_PROP, Boolean.TRUE.toString());
 		if (feature.isPrimary())

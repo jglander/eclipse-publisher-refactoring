@@ -8,10 +8,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Cloudsmith Inc - split into FeatureParser and FeatureManifestParser
+ *     SAP AG - consolidation of publishers for PDE formats
  *******************************************************************************/
 package org.eclipse.equinox.internal.p2.publisher.eclipse;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -21,13 +29,13 @@ import org.eclipse.equinox.internal.p2.core.helpers.LogHelper;
 import org.eclipse.equinox.p2.publisher.eclipse.Feature;
 import org.eclipse.equinox.spi.p2.publisher.LocalizationHelper;
 import org.eclipse.pde.internal.publishing.Activator;
-import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.SAXException;
 
 /**
  * The publisher feature parser. This class parses a feature either in jar or folder
  * form. Feature localization data (feature.properties) is also processed here.
  */
-public class FeatureParser extends DefaultHandler {
+public class FeatureParser {
 
 	private final FeatureManifestParser parser = new FeatureManifestParser();
 
@@ -49,7 +57,7 @@ public class FeatureParser extends DefaultHandler {
 			InputStream input = null;
 			try {
 				input = new BufferedInputStream(new FileInputStream(file));
-				feature = parser.parse(input);
+				feature = parser.parse(input, toURL(location));
 				if (feature != null) {
 					List<String> messageKeys = parser.getMessageKeys();
 					String[] keyStrings = messageKeys.toArray(new String[messageKeys.size()]);
@@ -57,6 +65,10 @@ public class FeatureParser extends DefaultHandler {
 				}
 			} catch (FileNotFoundException e) {
 				return null;
+			} catch (SAXException e) {
+				logWarning(location, e);
+			} catch (IOException e) {
+				logWarning(location, e);
 			} finally {
 				if (input != null)
 					try {
@@ -74,16 +86,18 @@ public class FeatureParser extends DefaultHandler {
 					return null;
 
 				InputStream input = new BufferedInputStream(jar.getInputStream(entry));
-				feature = parser.parse(input);
+				feature = parser.parse(input, toURL(location));
 				if (feature != null) {
 					List<String> messageKeys = parser.getMessageKeys();
 					String[] keyStrings = messageKeys.toArray(new String[messageKeys.size()]);
 					feature.setLocalizations(LocalizationHelper.getJarPropertyLocalizations(location, "feature", null, keyStrings)); //$NON-NLS-1$
 				}
+			} catch (SAXException e) {
+				logWarning(location, e);
 			} catch (IOException e) {
-				e.printStackTrace();
+				logWarning(location, e);
 			} catch (SecurityException e) {
-				LogHelper.log(new Status(IStatus.WARNING, Activator.ID, "Exception parsing feature: " + location.getAbsolutePath(), e)); //$NON-NLS-1$
+				logWarning(location, e);
 			} finally {
 				try {
 					if (jar != null)
@@ -94,5 +108,18 @@ public class FeatureParser extends DefaultHandler {
 			}
 		}
 		return feature;
+	}
+
+	private static void logWarning(File location, Exception exception) {
+		LogHelper.log(new Status(IStatus.WARNING, Activator.ID, "Exception parsing feature: " + location.getAbsolutePath(), exception)); //$NON-NLS-1$
+	}
+
+	private static URL toURL(File location) {
+		try {
+			return location.toURI().toURL();
+		} catch (MalformedURLException e) {
+			// not known to happen
+			throw new RuntimeException(e);
+		}
 	}
 }

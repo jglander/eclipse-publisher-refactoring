@@ -29,6 +29,7 @@ import org.eclipse.pde.build.tests.PDETestCase;
 import org.eclipse.pde.internal.build.*;
 import org.eclipse.pde.internal.build.builder.BuildDirector;
 import org.eclipse.pde.internal.build.site.*;
+import org.eclipse.pde.internal.publishing.Messages;
 import org.osgi.framework.Version;
 
 public class ScriptGenerationTests extends PDETestCase {
