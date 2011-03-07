@@ -989,31 +989,7 @@ public final class Utils implements IPDEBuildConstants, IBuildPropertiesConstant
 	}
 
 	public static boolean guessUnpack(BundleDescription bundle, String[] classpath) {
-		if (bundle == null)
-			return true;
-
-		Dictionary properties = (Dictionary) bundle.getUserObject();
-		String shape = null;
-		if (properties != null && (shape = (String) properties.get(ECLIPSE_BUNDLE_SHAPE)) != null) {
-			return shape.equals("dir"); //$NON-NLS-1$
-		}
-
-		// launcher fragments are a special case, they have no bundle-classpath and they must
-		//be unpacked
-		if (bundle.getHost() != null && bundle.getName().startsWith(BUNDLE_EQUINOX_LAUNCHER))
-			return true;
-
-		if (new File(bundle.getLocation()).isFile())
-			return false;
-
-		if (classpath.length == 0)
-			return false;
-
-		for (int i = 0; i < classpath.length; i++) {
-			if (classpath[i].equals(".")) //$NON-NLS-1$
-				return false;
-		}
-		return true;
+		return org.eclipse.pde.internal.publishing.Utils.guessUnpack(bundle, classpath);
 	}
 
 	public static Version extract3Segments(String s) {

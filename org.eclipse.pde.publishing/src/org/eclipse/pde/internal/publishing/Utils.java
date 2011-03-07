@@ -12,6 +12,11 @@
 package org.eclipse.pde.internal.publishing;
 
 import java.io.*;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import org.eclipse.osgi.service.resolver.BundleDescription;
+import org.eclipse.osgi.util.ManifestElement;
+import org.osgi.framework.BundleException;
 
 public final class Utils {
 
@@ -38,5 +43,65 @@ public final class Utils {
 					out.close();
 			}
 		}
+	}
+
+	public static boolean guessUnpack(BundleDescription bundle, String[] classpath) {
+		if (bundle == null)
+			return true;
+
+		Dictionary properties = (Dictionary) bundle.getUserObject();
+		String shape = null;
+		if (properties != null && (shape = (String) properties.get(Constants.ECLIPSE_BUNDLE_SHAPE)) != null) {
+			return shape.equals("dir"); //$NON-NLS-1$
+		}
+
+		// launcher fragments are a special case, they have no bundle-classpath and they must
+		//be unpacked
+		if (bundle.getHost() != null && bundle.getName().startsWith(Constants.BUNDLE_EQUINOX_LAUNCHER))
+			return true;
+
+		if (new File(bundle.getLocation()).isFile())
+			return false;
+
+		if (classpath.length == 0)
+			return false;
+
+		for (int i = 0; i < classpath.length; i++) {
+			if (classpath[i].equals(".")) //$NON-NLS-1$
+				return false;
+		}
+		return true;
+	}
+
+	public static String[] getBundleClasspath(Dictionary manifest) {
+		String fullClasspath = getBundleManifestHeader(manifest, Constants.BUNDLE_CLASSPATH);
+		String[] result = new String[0];
+		try {
+			if (fullClasspath != null) {
+				ManifestElement[] classpathEntries;
+				classpathEntries = ManifestElement.parseHeader(Constants.BUNDLE_CLASSPATH, fullClasspath);
+				result = new String[classpathEntries.length];
+				for (int i = 0; i < classpathEntries.length; i++) {
+					result[i] = classpathEntries[i].getValue();
+				}
+			}
+		} catch (BundleException e) {
+			//Ignore
+		}
+		return result;
+	}
+
+	public static String getBundleManifestHeader(Dictionary manifest, String header) {
+		String value = (String) manifest.get(header);
+		if (value != null)
+			return value;
+
+		Enumeration keys = manifest.keys();
+		while (keys.hasMoreElements()) {
+			String key = (String) keys.nextElement();
+			if (key.equalsIgnoreCase(header))
+				return (String) manifest.get(key);
+		}
+		return null;
 	}
 }

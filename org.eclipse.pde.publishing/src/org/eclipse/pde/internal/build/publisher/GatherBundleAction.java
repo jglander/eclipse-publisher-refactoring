@@ -21,8 +21,7 @@ import org.eclipse.equinox.p2.publisher.eclipse.*;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactDescriptor;
 import org.eclipse.equinox.spi.p2.publisher.PublisherHelper;
 import org.eclipse.osgi.service.resolver.BundleDescription;
-import org.eclipse.pde.internal.build.BundleHelper;
-import org.eclipse.pde.internal.build.Utils;
+import org.eclipse.pde.internal.publishing.Utils;
 
 public class GatherBundleAction extends BundlesAction {
 	private GatheringComputer computer = null;
@@ -39,15 +38,18 @@ public class GatherBundleAction extends BundlesAction {
 		this.bundleLocation = location;
 	}
 
+	@Override
 	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor) {
 		return super.perform(publisherInfo, results, monitor);
 	}
 
+	@Override
 	protected void publishArtifact(IArtifactDescriptor descriptor, File base, File[] inclusions, IPublisherInfo publisherInfo) {
 		//ignore passed in inclusions, publish according to our computer
 		publishArtifact(descriptor, computer.getFiles(), null, publisherInfo, computer);
 	}
 
+	@Override
 	protected BundleDescription[] getBundleDescriptions(File[] bundleLocations, IProgressMonitor monitor) {
 		Dictionary manifest = basicLoadManifest(manifestRoot);
 		if (manifest == null)
@@ -65,7 +67,7 @@ public class GatherBundleAction extends BundlesAction {
 			if (unpack != null) {
 				shape = Boolean.valueOf(unpack).booleanValue() ? IBundleShapeAdvice.DIR : IBundleShapeAdvice.JAR;
 			} else {
-				shape = Utils.guessUnpack(bundle, BundleHelper.getClasspath(manifest)) ? IBundleShapeAdvice.DIR : IBundleShapeAdvice.JAR;
+				shape = Utils.guessUnpack(bundle, Utils.getBundleClasspath(manifest)) ? IBundleShapeAdvice.DIR : IBundleShapeAdvice.JAR;
 			}
 		}
 		BundleShapeAdvice advice = new BundleShapeAdvice(bundle.getSymbolicName(), PublisherHelper.fromOSGiVersion(bundle.getVersion()), shape);

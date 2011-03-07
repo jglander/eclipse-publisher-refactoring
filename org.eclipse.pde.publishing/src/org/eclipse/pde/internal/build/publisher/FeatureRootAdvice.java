@@ -17,7 +17,6 @@ import org.eclipse.equinox.internal.p2.publisher.FileSetDescriptor;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.publisher.AbstractAdvice;
 import org.eclipse.equinox.p2.publisher.actions.IFeatureRootAdvice;
-import org.eclipse.pde.internal.build.Config;
 
 public class FeatureRootAdvice extends AbstractAdvice implements IFeatureRootAdvice {
 	private static final int IDX_COMPUTER = 0;
@@ -28,6 +27,7 @@ public class FeatureRootAdvice extends AbstractAdvice implements IFeatureRootAdv
 	private String featureId;
 	private Version featureVersion;
 
+	@Override
 	public boolean isApplicable(String configSpec, boolean includeDefault, String id, Version version) {
 		if (featureId != null && !featureId.equals(id))
 			return false;
@@ -102,9 +102,9 @@ public class FeatureRootAdvice extends AbstractAdvice implements IFeatureRootAdv
 			descriptor = (FileSetDescriptor) configAdvice[IDX_DESCRIPTOR];
 		else {
 			String key = "root"; //$NON-NLS-1$
-			if (!config.equals(Config.ANY) && config.length() > 0)
+			if (config.length() > 0)
 				key += "." + config; //$NON-NLS-1$
-			descriptor = new FileSetDescriptor(key, config.equals(Config.ANY) ? null : config);
+			descriptor = new FileSetDescriptor(key, config);
 			configAdvice[IDX_DESCRIPTOR] = descriptor;
 		}
 		return descriptor;
