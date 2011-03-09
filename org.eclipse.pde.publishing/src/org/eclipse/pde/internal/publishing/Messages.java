@@ -8,7 +8,7 @@
  * Contributors:
  * IBM - Initial API and implementation
  *******************************************************************************/
-package org.eclipse.equinox.internal.p2.publisher.eclipse;
+package org.eclipse.pde.internal.publishing;
 
 import org.eclipse.osgi.util.NLS;
 
