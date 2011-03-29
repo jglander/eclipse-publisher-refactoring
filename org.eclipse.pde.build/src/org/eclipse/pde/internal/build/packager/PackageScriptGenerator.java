@@ -13,7 +13,6 @@ package org.eclipse.pde.internal.build.packager;
 import java.io.*;
 import java.util.*;
 import org.eclipse.core.runtime.*;
-import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.build.*;
 import org.eclipse.pde.internal.build.ant.AntScript;
@@ -91,10 +90,10 @@ public class PackageScriptGenerator extends AssembleScriptGenerator {
 			ProductFile product = configScriptGenerator.getProductFile();
 			String productPath = null;
 			if (product != null) {
-				File productFile = product.getLocation();
+				File productFile = new File(product.getLocation());
 				String modLocation = getProductDir() + productFile.getName();
 				script.printAvailableTask(PROPERTY_P2_PRODUCT_MOD, modLocation, modLocation);
-				script.printProperty(PROPERTY_P2_PRODUCT_MOD, product.getLocation().getPath());
+				script.printProperty(PROPERTY_P2_PRODUCT_MOD, product.getLocation());
 				productPath = Utils.getPropertyFormat(PROPERTY_P2_PRODUCT_MOD);
 			}
 

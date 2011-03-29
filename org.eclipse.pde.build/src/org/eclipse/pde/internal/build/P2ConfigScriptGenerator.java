@@ -15,7 +15,6 @@ import java.io.*;
 import java.net.URI;
 import java.util.*;
 import org.eclipse.core.runtime.*;
-import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.VersionRange;
 import org.eclipse.pde.internal.build.ant.FileSet;
@@ -184,14 +183,15 @@ public class P2ConfigScriptGenerator extends AssembleConfigScriptGenerator {
 		ProductFile product = getProductFile();
 		if (product != null) {
 
+			String productPath = product.getLocation();
 			String productDir = getWorkingDirectory() + '/' + DEFAULT_FEATURE_LOCATION + '/' + CONTAINER_FEATURE + "/product"; //$NON-NLS-1$
-			File productFile = product.getLocation();
+			File productFile = new File(productPath);
 			String newProduct = new File(productDir, productFile.getName()).getAbsolutePath();
-			script.printCopyFileTask(productFile.getPath(), newProduct, true);
+			script.printCopyFileTask(productPath, newProduct, true);
 
 			if (!generateProductP2Inf(productFile, productDir)) {
 				//if we didn't generate the file, copy over the provided one
-				File parent = productFile.getParentFile();
+				File parent = new File(productPath).getParentFile();
 				File p2Inf = new File(parent, "p2.inf"); //$NON-NLS-1$
 				if (p2Inf.exists())
 					script.printCopyTask(p2Inf.getAbsolutePath(), productDir, null, false, true);

@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    IBM - Initial API and implementation
- *    G&H Softwareentwicklung GmbH - internationalization implementation (bug 150933)
- *    Prosyst - create proper OSGi bundles (bug 174157)
- *    Felix Riegger (SAP AG) - consolidation of publishers for PDE formats (bug 331974)
+ * IBM - Initial API and implementation G&H Softwareentwicklung
+ * GmbH - internationalization implementation (bug 150933) Prosyst - create
+ * proper OSGi bundles (bug 174157)
  *******************************************************************************/
 package org.eclipse.pde.internal.build;
 
@@ -18,7 +17,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.jar.JarFile;
 import org.eclipse.core.runtime.*;
-import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.pde.internal.build.ant.*;
 import org.eclipse.pde.internal.build.builder.BuildDirector;
@@ -95,20 +93,18 @@ public class AssembleConfigScriptGenerator extends AbstractScriptGenerator {
 			return result;
 		String[] icons = os != null ? productFile.getIcons(os) : productFile.getIcons();
 		for (int i = 0; i < icons.length; i++) {
-
-			String icon = Utils.makeRelative(new Path(icons[i]), new Path(productFile.getLocation().getParent())).toOSString();
-
-			String location = findFile(icon, true);
+			String location = findFile(icons[i], true);
 			if (location == null) {
-				File iconFile = new File(productFile.getLocation().getParentFile(), icon);
-				if (iconFile.exists())
-					location = Utils.makeRelative(new Path(iconFile.getAbsolutePath()), new Path(workingDirectory)).toOSString();
+				File productLocation = new File(productFile.getLocation());
+				File icon = new File(productLocation.getParentFile(), icons[i]);
+				if (icon.exists())
+					location = Utils.makeRelative(new Path(icon.getAbsolutePath()), new Path(workingDirectory)).toOSString();
 			}
 			if (location != null)
 				result += ", " + Utils.getPropertyFormat(PROPERTY_BASEDIR) + '/' + location; //$NON-NLS-1$
 			else {
-				result += ", " + Utils.getPropertyFormat(PROPERTY_BUILD_DIRECTORY) + '/' + DEFAULT_PLUGIN_LOCATION + '/' + icon; //$NON-NLS-1$
-				result += ", " + Utils.getPropertyFormat(PROPERTY_BUILD_DIRECTORY) + '/' + DEFAULT_FEATURE_LOCATION + '/' + icon; //$NON-NLS-1$
+				result += ", " + Utils.getPropertyFormat(PROPERTY_BUILD_DIRECTORY) + '/' + DEFAULT_PLUGIN_LOCATION + '/' + icons[i]; //$NON-NLS-1$
+				result += ", " + Utils.getPropertyFormat(PROPERTY_BUILD_DIRECTORY) + '/' + DEFAULT_FEATURE_LOCATION + '/' + icons[i]; //$NON-NLS-1$
 			}
 		}
 		return result;
@@ -782,10 +778,10 @@ public class AssembleConfigScriptGenerator extends AbstractScriptGenerator {
 			if (rootFileProviders.size() > 0) {
 				if (productFile != null) {
 					script.println();
-					File modFile = productFile.getLocation();
+					File modFile = new File(productFile.getLocation());
 					String modLocation = Utils.getPropertyFormat(PROPERTY_BUILD_DIRECTORY) + '/' + DEFAULT_FEATURE_LOCATION + '/' + CONTAINER_FEATURE + "/product/" + modFile.getName(); //$NON-NLS-1$
 					script.printAvailableTask(PROPERTY_P2_PRODUCT_MOD, modLocation, modLocation);
-					script.printProperty(PROPERTY_P2_PRODUCT_MOD, productFile.getLocation().getPath());
+					script.printProperty(PROPERTY_P2_PRODUCT_MOD, productFile.getLocation());
 				}
 				script.printTab();
 				script.print("<p2.generator "); //$NON-NLS-1$

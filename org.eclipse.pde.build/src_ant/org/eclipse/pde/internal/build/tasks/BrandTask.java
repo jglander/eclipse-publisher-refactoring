@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build.tasks;
 
-import java.io.File;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.eclipse.equinox.internal.p2.publisher.eclipse.BrandingIron;
-import org.eclipse.equinox.internal.p2.publisher.eclipse.ExecutablesDescriptor;
+import org.eclipse.pde.internal.build.BrandingIron;
 
 /**
  *
@@ -22,16 +20,12 @@ import org.eclipse.equinox.internal.p2.publisher.eclipse.ExecutablesDescriptor;
 public class BrandTask extends Task {
 
 	BrandingIron iron;
-	private String name;
-	private String os;
-	private File root;
 
 	public BrandTask() {
 		iron = new BrandingIron();
 	}
 
 	public void setName(String value) {
-		name = value;
 		iron.setName(value);
 	}
 
@@ -40,17 +34,16 @@ public class BrandTask extends Task {
 	}
 
 	public void setRoot(String value) {
-		root = new File(value);
+		iron.setRoot(value);
 	}
 
 	public void setOS(String value) {
-		os = value;
 		iron.setOS(value);
 	}
 
 	public void execute() throws BuildException {
 		try {
-			iron.brand(ExecutablesDescriptor.createDescriptor(os, name, root));
+			iron.brand();
 		} catch (Exception e) {
 			throw new BuildException(e);
 		}
