@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.pde.internal.build.builder;
 
+import java.io.File;
 import java.util.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.equinox.p2.publisher.eclipse.Feature;
@@ -17,6 +18,7 @@ import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.build.*;
+import org.eclipse.pde.internal.build.builder.ClasspathComputer3_0.ClasspathElement;
 import org.eclipse.pde.internal.build.site.BuildTimeFeature;
 import org.osgi.framework.Version;
 
@@ -76,6 +78,30 @@ public class BuildDirector extends AbstractBuildScriptGenerator {
 
 	public BuildDirector(AssemblyInformation assemblageInformation) {
 		this.assemblyData = assemblageInformation;
+	}
+
+	private final Map extractedLocations = new HashMap();
+
+	public String getExtractedRoot(ClasspathElement element) {
+		if (element.getSubPath() == null)
+			return element.getPath();
+
+		String absolute = element.getAbsolutePath();
+		if (extractedLocations.containsKey(absolute)) {
+			return (String) extractedLocations.get(absolute);
+		}
+
+		//Use the jar name, append a suffix if that name is already taken
+		String name = new File(absolute).getName();
+		if (name.endsWith(".jar")) //$NON-NLS-1$
+			name = name.substring(0, name.length() - 4);
+		String destination = name;
+		while (extractedLocations.containsValue(destination)) {
+			destination = name + '_' + Integer.toHexString(destination.hashCode());
+		}
+
+		extractedLocations.put(absolute, destination);
+		return destination;
 	}
 
 	/**
